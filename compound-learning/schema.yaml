@@ -1,0 +1,72 @@
+# Frontmatter schema for solution documents in docs/solutions/
+# Used by the compound-learning skill and learnings-researcher agent
+
+frontmatter:
+  required:
+    title:
+      type: string
+      description: Short descriptive title (max 80 chars)
+    category:
+      type: enum
+      values:
+        - patterns
+        - performance-issues
+        - database-issues
+        - runtime-errors
+        - security-issues
+        - deployment-issues
+        - integration-issues
+        - frontend-issues
+      description: Maps to subdirectory in docs/solutions/
+    severity:
+      type: enum
+      values:
+        - critical    # Production outage or data loss
+        - high        # Major feature broken, workaround exists
+        - medium      # Degraded experience, non-blocking
+        - low         # Minor issue, cosmetic, or improvement
+      description: Impact level when the issue occurred
+    date_discovered:
+      type: date
+      format: YYYY-MM-DD
+    tags:
+      type: list[string]
+      description: >
+        Searchable keywords. Use lowercase kebab-case.
+        Common tags: cloud-run, cloud-sql, psycopg3, fastapi, react,
+        tailwind, vite, tanstack-query, pgvector, migration, ci-cd,
+        auth, rls, redis, sse, websocket, memory-leak, n-plus-one,
+        bundle-size, cold-start, cors, deployment
+
+  required_for_issues:
+    symptoms:
+      type: list[string]
+      description: Observable indicators that the problem exists
+    root_cause:
+      type: string
+      description: Why the problem occurred (1-2 sentences)
+
+  optional:
+    related_commits:
+      type: list[string]
+      description: Git SHAs of commits that fixed or caused the issue
+    related_files:
+      type: list[string]
+      description: Key files involved in the fix
+    environment:
+      type: enum
+      values: [production, staging, local, ci]
+      description: Where the issue was discovered
+
+body_sections:
+  required:
+    - Context       # What was happening when the problem appeared
+    - Solution      # What was changed and why
+
+  recommended:
+    - Investigation # How the root cause was identified
+    - Prevention    # How to avoid this in the future
+
+  optional:
+    - Workaround    # Temporary fix if the real fix is complex
+    - References    # Links to docs, issues, or related solutions
