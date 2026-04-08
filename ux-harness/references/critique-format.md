@@ -1,44 +1,65 @@
 # Critique Format
 
-The evaluator MUST output a file named `critique-N.md` (where N is the iteration number) in the run directory with this exact structure. Every section is required.
+The evaluator MUST output `critique-N.md` with the exact structure below.
 
 ## Template
 
 # Critique — Iteration [N]
 
-## Scores
-- Design Fidelity: [X]/10
-- Visual Quality: [X]/10
+## Scorecard
+- Intent Match: [X]/10
+- Design Quality: [X]/10
+- Originality: [X]/10
 - Craft: [X]/10
 - Functionality: [X]/10
+- Weighted Score: [X.X]/10
+- Confidence: [low / medium / high]
+
+## Hard Gate Status
+- Intent Match >= 7: PASS / FAIL
+- Design Quality >= 7: PASS / FAIL
+- Originality >= 6: PASS / FAIL
+- Craft >= 6: PASS / FAIL
+- Functionality >= 6: PASS / FAIL
+- Weighted Score >= 7.2: PASS / FAIL
+
+## Evidence
+[Concrete observations. Reference screenshots, breakpoints, and interactive states.]
+
+- **Desktop**: [evidence]
+- **Tablet**: [evidence]
+- **Mobile**: [evidence]
+- **Interaction Checks**: [evidence]
 
 ## Score Justifications
-[One sentence per criterion explaining the score. Reference specific elements.]
-
-- **Design Fidelity**: [justification]
-- **Visual Quality**: [justification]
-- **Craft**: [justification]
-- **Functionality**: [justification]
+- **Intent Match**: [specific justification]
+- **Design Quality**: [specific justification]
+- **Originality**: [specific justification]
+- **Craft**: [specific justification]
+- **Functionality**: [specific justification]
 
 ## What Works
-[List specific elements that match the design intent well. Be concrete.]
-
-1. [Element + why it works]
-2. [Element + why it works]
+1. [Specific strength]
+2. [Specific strength]
 
 ## Issues (Actionable)
-[Each issue MUST include a specific fix. The generator should not need to investigate — just implement.]
-
-1. **[Issue summary]** — [Exact fix: what to change, where, and to what value]
+1. **[Issue summary]** — [Exact fix: what to change, where, and to what]
 2. **[Issue summary]** — [Exact fix]
 
 ## Regression Check (Iteration 2+ only)
-[For each issue from the previous critique, confirm whether it was fixed.]
+- [Previous issue 1]: FIXED / PARTIALLY FIXED / NOT FIXED
+- [Previous issue 2]: FIXED / PARTIALLY FIXED / NOT FIXED
 
-- [Previous issue 1]: FIXED / NOT FIXED / PARTIALLY FIXED
-- [Previous issue 2]: FIXED / NOT FIXED / PARTIALLY FIXED
+## Contract Compliance
+- Contract target addressed: YES / PARTIALLY / NO
+- Required evidence captured: YES / PARTIALLY / NO
+- Preserve requirements honored: YES / PARTIALLY / NO
+- Notes: [short explanation]
 
-## Verdict: [ITERATE / PASS]
+## Direction Decision
+- Recommendation: REFINE_CURRENT_DIRECTION / PIVOT_AESTHETIC_DIRECTION
+- Reason: [why]
 
-[If ITERATE: which issues are blocking? Which scores need to improve?]
-[If PASS: confirm all criteria meet threshold.]
+## Verdict: PASS / ITERATE / STOP_LOW_CONFIDENCE
+
+[One short paragraph explaining the verdict.]

@@ -10,10 +10,12 @@ The user wants to build:
 
 ## Reference Materials
 
-Read the design intent directory for full context:
-- Design intent directory: `{{RUN_DIR}}/design-intent/`
-  - `prompt.md` — the user's text description
-  - `references/` — reference images and screenshots of reference URLs (if any)
+Read these files for design context:
+- `{{RUN_DIR}}/design-intent/prompt.md` — the user's text description
+- `{{RUN_DIR}}/design-intent/visual-analysis.md` — structured analysis of reference images (colors, typography, layout, components, mood)
+- `{{RUN_DIR}}/design-intent/DESIGN.md` — project design tokens (if it exists)
+
+Do NOT read files in `references/` — they are raw images. The visual analysis contains everything you need.
 
 ## User Taste Preferences (Learned)
 
@@ -29,12 +31,12 @@ If empty, no project-specific conventions have been learned yet.
 
 ## Your Job
 
-1. Read everything in `{{RUN_DIR}}/design-intent/`
-2. If reference images exist, analyze them for specific design decisions:
-   - Color palette (extract exact hex values if visible)
-   - Typography (identify fonts or describe the style)
-   - Layout grid and spacing rhythm
-   - Component patterns
+1. Read `{{RUN_DIR}}/design-intent/prompt.md` and `{{RUN_DIR}}/design-intent/visual-analysis.md`
+2. Use the visual analysis to inform specific design decisions:
+   - Color palette (use the hex values from the visual analysis)
+   - Typography (use the font observations from the visual analysis)
+   - Layout grid and spacing rhythm (use the layout structure from the visual analysis)
+   - Component patterns (use the component patterns from the visual analysis)
 3. Cross-reference against the taste preferences as constraints
 4. Write `{{RUN_DIR}}/spec.md` following the format in the spec-format reference below
 

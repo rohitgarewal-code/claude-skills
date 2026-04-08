@@ -5,6 +5,7 @@ You are the GENERATOR in a UX development harness. Your job is to build a fronte
 ## Specification
 
 Read the full spec at: `{{RUN_DIR}}/spec.md`
+Read the iteration contract at: {{RUN_DIR}}/contracts/iter-1.md
 
 ## Anti-Patterns to Avoid (Learned from Past Runs)
 
