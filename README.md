@@ -1,6 +1,6 @@
 # Claude Skills
 
-A collection of [Claude Code skills](https://docs.anthropic.com/en/docs/claude-code/skills) for knowledge management, design validation, and creative production. Seven skills organized into two groups: a **learning system** for capturing and retrieving knowledge, and a **design system** for creating high-quality visual and frontend work.
+A collection of [Claude Code skills](https://docs.anthropic.com/en/docs/claude-code/skills) for knowledge management, design validation, and creative production. Eight skills organized into three groups: a **learning system** for capturing and retrieving knowledge, a **design system** for creating high-quality visual and frontend work, and a **workflow system** for cross-agent session continuity.
 
 ## Learning & Validation Skills
 
@@ -102,6 +102,22 @@ Applies consistent, professional styling to existing artifacts — slides, docum
 | Tech Innovation | Electric blue/cyan | Startups, AI/ML |
 | Botanical Garden | Fern/marigold | Food, natural products |
 | Midnight Galaxy | Deep purple/lavender | Entertainment, gaming |
+
+---
+
+## Workflow Skills
+
+### `/session-management`
+
+Cross-agent session continuity. Persists project context in a `.state/` directory at the repo root — keyed by branch so parallel workstreams never clobber each other — so that Claude Code, Codex, Grok, and Cursor sessions can hand off work to each other. Any agent writes state at session end ("wrap up"); any agent reads it at session start ("where were we?"). The skill is one entry point to a shared, tool-agnostic protocol: the repo's `.state/PROTOCOL.md` copy is the source of truth.
+
+**Use when:** Starting a session (load context, especially if another agent/model wrote it), or ending one ("wrap up", "save the session", "I'm done").
+
+**State layout:** `.state/<branch-slug>/` with `state.json` (current snapshot), `log.jsonl` (append-only session log), and `archive.json` (evicted narratives). Summaries derive from `git log`, not memory; state commits locally and is never pushed by the agent.
+
+**Tools used:** `Read`, `Write`, `Edit`, `Glob`, `Bash`
+
+**Protocol:** See [`session-management/PROTOCOL.md`](session-management/PROTOCOL.md) for the full cross-agent specification.
 
 ---
 
