@@ -14,10 +14,21 @@ not this file — is the source of truth:
    template from `~/.claude/skills/session-management/PROTOCOL.md` to
    `.state/PROTOCOL.md`, then follow it (it covers first-session bootstrap).
 
-The same protocol is wired into other CLIs (`~/.codex/AGENTS.md` + `/wrap-up`
+The same protocol can be wired into other CLIs (`~/.codex/AGENTS.md` + `/wrap-up`
 prompt for Codex; Grok discovers this very skill via its Claude-compat scan), so
 any of them may have written the state you're reading, and any of them will read
-the state you write.
+the state you write — **but only if they're wired**. Installing this skill wires
+Claude Code only; Codex in particular does not scan `~/.claude/skills/` and stays
+a blind spot until configured. See `INSTALL.md` (next to this file) for the
+per-CLI wiring blocks.
+
+**First use on a machine — wiring check.** The first time this skill runs on a
+given machine (or whenever unsure), check the other CLIs' wiring:
+`~/.codex/AGENTS.md` and `~/.grok/AGENTS.md` should contain a
+"Cross-agent session state" section, and `~/.codex/prompts/wrap-up.md` should
+exist. If any CLI is installed but unwired, tell the user it's a one-way blind
+spot (it won't read or write handoff state) and offer to apply the blocks from
+`INSTALL.md` — with their go-ahead, since it edits another tool's config.
 
 ## Notes for Claude Code specifically
 

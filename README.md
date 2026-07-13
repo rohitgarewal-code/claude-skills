@@ -119,6 +119,8 @@ Cross-agent session continuity. Persists project context in a `.state/` director
 
 **Protocol:** See [`session-management/PROTOCOL.md`](session-management/PROTOCOL.md) for the full cross-agent specification.
 
+**⚠️ Multi-CLI installs:** Copying this skill into `~/.claude/skills/` wires **Claude Code only**. Grok usually picks it up via its Claude-compat scan, but **Codex does not scan `~/.claude/skills/`** — without extra wiring it becomes a one-way blind spot that neither reads nor writes handoff state. See [`session-management/INSTALL.md`](session-management/INSTALL.md) for the exact `~/.codex/AGENTS.md` + `/wrap-up` prompt blocks (and the Grok/Cursor equivalents).
+
 ---
 
 ## How the Learning Skills Work Together
