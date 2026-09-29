@@ -1,6 +1,6 @@
 # Claude Skills
 
-A collection of [Claude Code skills](https://docs.anthropic.com/en/docs/claude-code/skills) for knowledge management, design validation, and creative production. Eight skills organized into three groups: a **learning system** for capturing and retrieving knowledge, a **design system** for creating high-quality visual and frontend work, and a **workflow system** for cross-agent session continuity.
+A collection of [Claude Code skills](https://docs.anthropic.com/en/docs/claude-code/skills) for knowledge management, design validation, and creative production. Nine skills organized into three groups: a **learning system** for capturing and retrieving knowledge, a **design system** for creating high-quality visual and frontend work, and a **workflow system** for cross-agent session continuity.
 
 ## Learning & Validation Skills
 
@@ -11,6 +11,14 @@ Pressure-tests a design decision by running two AI agents in parallel — a **de
 **Use when:** You're debating an architecture, data model, API shape, or component structure and want structured pushback before committing.
 
 **Tools used:** `Task`, `Read`, `Glob`, `Grep`
+
+---
+
+### `/jev-fit`
+
+Checks every design for where **Jev** (TypeSafe's cheap, fast judgment model: Choice / Score / yes-no questions at ~$0.04 per million input tokens and ~300 ms) should, or should not, be part of it. It carries what Jev can and cannot do, a four-question fit test, the six usage categories (analyze archives, search by meaning, triage, check against rules, speed up agents, respond instantly), rubric-design rules learned from real replays, how to measure a use before enforcing it, and a required six-row **Jev fit** table for every design. `/challenge-design`'s challenger checks that table.
+
+**Use when:** writing any design, spec or plan, or whenever an LLM call only classifies, routes, scores or answers yes/no.
 
 ---
 
@@ -174,8 +182,12 @@ Copy any skill directory into your project's `.claude/skills/` folder, or into `
 cp -r challenge-design /path/to/your-project/.claude/skills/
 
 # All skills — global
-cp -r * ~/.claude/skills/
+for d in */; do [ "$d" = "global/" ] || cp -r "$d" ~/.claude/skills/; done
 ```
+
+To keep machines in sync, clone this repo and symlink instead of copying (`ln -s ~/dev/claude-skills/jev-fit ~/.claude/skills/jev-fit`), then `git pull` to update.
+
+`global/CLAUDE.md` is the author's global Claude Code instructions (workflow rules, including the Jev fit check). To use it: `ln -s ~/dev/claude-skills/global/CLAUDE.md ~/.claude/CLAUDE.md`.
 
 Skills are automatically discovered by Claude Code once placed in a recognized skills directory.
 

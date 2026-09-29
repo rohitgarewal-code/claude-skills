@@ -60,6 +60,7 @@ Instructions:
 4. Argue why your alternative is superior on at least 2 of: Simplicity, Correctness, Extensibility, Performance, Developer Experience
 5. Acknowledge what the original design does better than yours (steel-man the opponent)
 6. Score BOTH designs 1-10 on: Simplicity, Correctness, Extensibility, Performance, Developer Experience
+7. Read ~/.claude/skills/jev-fit/SKILL.md and check the design's "Jev fit" section: is it present and filled for all six categories? Flag any classify/route/score/yes-no LLM call or sampled review the design missed as a Jev opportunity, and any proposed Jev use that fails the four-question fit test or lets Jev grant authority.
 
 Output your challenge as a structured counter-proposal with evidence from the codebase.
 ```
