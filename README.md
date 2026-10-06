@@ -6,11 +6,13 @@ A collection of [Claude Code skills](https://docs.anthropic.com/en/docs/claude-c
 
 ### `/challenge-design`
 
-Pressure-tests a design decision by running two AI agents in parallel — a **defender** of the current design and a **challenger** proposing an alternative. Both agents read the actual codebase (no armchair arguments), score designs across five dimensions (Simplicity, Correctness, Extensibility, Performance, Developer Experience), and a verdict is declared with reasoning.
+Pressure-tests a design with a **live debate**. A **defender** presents the design, and a **challenger** goes through it point by point proposing concrete alternatives. The two agents message each other directly. They first agree on a framework (criteria, the full topic list, what counts as evidence), then work topic by topic until they agree on a one-sentence resolution (keep / change / hybrid) or record a deadlock. The debate stops when every topic is aligned, when 90%+ are aligned and the rest are deadlocked, or after an hour. You get what they aligned on, what they couldn't, and the design with the aligned changes applied. There is no winner: the open items are yours to decide. Both agents must cite the code (no armchair arguments), and a concession needs a stated reason.
 
-**Use when:** You're debating an architecture, data model, API shape, or component structure and want structured pushback before committing.
+**Use when:** You're settling an architecture, data model, API shape, or workflow and want it argued out before you commit.
 
-**Tools used:** `Task`, `Read`, `Glob`, `Grep`
+**Options:** `--minutes N` (default 60) · `--target P` (default 90%)
+
+**Tools used:** `Agent`, `SendMessage`, `Bash`, `Read`, `Write`, `Glob`, `Grep`
 
 ---
 
