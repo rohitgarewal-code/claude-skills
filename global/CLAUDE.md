@@ -29,7 +29,7 @@
 - Run tests, check logs, demonstrate correctness
 
 ## 5. Design Challenger
-- After creating any major design (architecture, data model, API shape), invoke `/challenge-design` to pressure-test it before proceeding.
+- After creating any major design (architecture, data model, API shape), ask me whether to run `/challenge-design` before proceeding, and suggest a duration sized to the design (`--minutes`, default 60). Don't start it without a yes: a run is two agents debating for up to an hour.
 
 ## 5b. Jev Fit Check (every design, every project)
 - Every design, spec or plan includes a **"Jev fit" section**: for each of the six Jev usage categories, whether Jev applies, where, with what questions, and how it would be tested. Load the `jev-fit` skill (`~/.claude/skills/jev-fit/SKILL.md`) before writing it — it holds what Jev can/can't do, the fit test, the design rules and the required table.
