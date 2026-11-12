@@ -1,6 +1,6 @@
 ---
 name: hive-release-videos
-description: Daily release-to-video pipeline for Hive. Reads the "Hive Production Releases" artifact, finds every demoable feature that reached prod in the last 24 hours, builds a 15–20 s demo video for each with hive-feature-demo, publishes it publicly to the Object Edge Videos YouTube channel, adds it to the hive-os.ai video section with SEO/AEO, and emails Rohit a summary. Use when asked to "run the release videos", "make videos for today's release", or on a /loop.
+description: Daily release-to-video pipeline for Hive. Reads the "Hive Production Releases" artifact, finds every demoable feature that reached prod in the last 24 hours, builds a 25 s demo video for each with hive-feature-demo, publishes it publicly to the Object Edge Videos YouTube channel, adds it to the hive-os.ai video section with SEO/AEO, and emails Rohit a summary. Use when asked to "run the release videos", "make videos for today's release", or on a /loop.
 ---
 
 # Hive release videos
@@ -90,9 +90,12 @@ Follow `hive-feature-demo` exactly. These are the decisions it leaves open, made
 - **Render and score:** `node …/render_html.mjs demo.html --out renders/<slug>.mp4 --workers 4 --chrome "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"`, then `~/.claude/skills/video-studio/.venv/bin/python …/soundtrack.py … --music afrohouse --drop <trigger start> --outro 1.9 --loudness -15.2`.
 - **Internal wording:** real UI copy sometimes contains internal or admin-only terms ("legacy", "V2", architecture names such as Melange, raw tool or function-call syntax, ledger controls). Leave such a panel out, or drop just the internal word. Never invent a replacement.
 - **Loudness:** `--loudness -15.2` sometimes measures below -15 LUFS. Re-score at `-14.3`, or `-13.6` if needed, until it measures -14 ±1.
-- **Length:** the default target is 15–20 s. On 12 Nov, Rohit asked for 25 s cuts to compare. Use whatever length he last set, and spend extra time on one more real step, not on slower pacing.
+- **Length: 25 s** (Rohit's call, 12 Nov 2026). This overrides `hive-feature-demo`'s 15–20 s default and its 19.5 s timing budget.
+  - Spend the extra ~5 s on one more real step of the feature, and let the hero beat breathe.
+  - Don't pad or slow everything evenly: keep a beat change every 2–5 s and no more than three captions.
+  - Set the timeline duration to 25 and push the end card to about 23.1–25 s.
 - **Gate (all must pass, or the item is `failed` with the reason, and nothing uploads):**
-  - length 15–20 s;
+  - length 24–26 s;
   - loudness -14 ±1 LUFS, true peak under -1 dBTP;
   - every click a HIT;
   - the frame grid viewed;
@@ -154,7 +157,7 @@ The canonical example is commit `20761ee6c` (first entry: `no-slop-mode`, `i54wa
    | `publishedAt` | ISO with offset, the moment you published |
    | `durationSeconds` | the rounded length from `ffprobe` of the uploaded MP4 (matches YouTube's) |
    | `keywords` | 8–12 |
-   | `chapters` | `[]` for a 20 s clip |
+   | `chapters` | `[]` for a 25 s clip |
    | `sections` | 3–5, each a **question** heading with 1–2 short paragraphs |
    | `closing` | one line that zooms out to the principle |
    | `faq` | 3–5 question and answer pairs, consistent with the sections |
