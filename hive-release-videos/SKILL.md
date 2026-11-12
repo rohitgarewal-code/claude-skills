@@ -79,6 +79,13 @@ At most **one video per item**. If the run has more candidates than the cap, tak
 
 Follow `hive-feature-demo` exactly. These are the decisions it leaves open, made here for an unattended run:
 - **Hero = the item.** Use its demo steps as the trigger and effect beats. Use other items from the same release only for an "also in this release" card, and only when they have a visible effect. Dropping that beat is fine; No Slop did.
+- **Open by saying what the viewer will see, and what it runs on** (Rohit's call, 12 Nov 2026). This replaces `hive-feature-demo`'s plain title beat. The opening (0 to about 5 s) has three parts:
+  1. The kicker "WHAT'S NEW IN HIVE · <date>" and the feature title type on, as before.
+  2. **One "you'll see" line** of 14 words or fewer, saying plainly what the demo is about to show. For example: "Watch Scout check each live SEO change against pages that didn't change."
+  3. **The company-brain strip.** Two to four source chips flow into one node labelled "Hive · your company brain", and a line runs from it to the feature's name. The chips name the systems this feature actually draws on, as plain text with no logos. Use their names as they appear on Hive's Connections page (for example "Gmail", "Google Calendar", "HubSpot", "Jira", "Google Search Console"). Where it draws only on what Hive already holds, use the kind of data instead ("meetings", "decisions", "tasks"). The motion must explain it: the sources feed the brain, and the brain powers the feature.
+  - **Prove every source in the code** on local `qa`, from the service or tool the feature calls, or from the release note's **Where** and **Needs**. Never name a system the feature doesn't read. Record each source in `storyboard.md` with the `file:line` that proves it.
+  - Hold the line and strip for their reading time (1 s, plus 0.3 s per word after they land). Start the music drop and the hero after the opening, at about 5 s.
+  - The opening comes out of the 25 s, not on top of it: tighten the hero beats. The opening's line and strip don't count toward the three captions.
 - **Ground every label in the repo on local `qa`.** Grep `frontend/src` for strings from **Where** and **Demo**, then read the components. A parallel Explore agent that returns exact copy works well; ask it for labels, placeholders, buttons, states and their order. If the screen doesn't exist on `qa`, skip the item (`skip_reason: "UI not on qa"`). Never invent a screen.
 - **Don't wait for storyboard approval.** Write `storyboard.md`, then build. Record anything invented (an illustrative "before", server-written copy) in its last section.
 - **Data is always invented:** Jordan Lee (user), plus fictional companies and people per video. `git grep` the repo for every name you pick; if it appears anywhere (demo datasets, fixtures, docs), pick another. The demo notes often name real colleagues and customer accounts: never put those on screen.
@@ -96,6 +103,7 @@ Follow `hive-feature-demo` exactly. These are the decisions it leaves open, made
   - Set the timeline duration to 25 and push the end card to about 23.1–25 s.
 - **Gate (all must pass, or the item is `failed` with the reason, and nothing uploads):**
   - length 24–26 s;
+  - the opening says what's shown and names only sources the code proves;
   - loudness -14 ±1 LUFS, true peak under -1 dBTP;
   - every click a HIT;
   - the frame grid viewed;
@@ -115,6 +123,7 @@ Load `claude-in-chrome`. Use one tab for the whole run, and close it at the end.
    - **Description:** 100–160 words in Rohit's voice (load `rohit-voice`).
      - **First line:** `Watch and read more: https://hive-os.ai/videos/<slug>`, so the site's watch page gets the visits and the credit. Pick the slug now, the same one as the work folder.
      - Then the reframe, then what the feature does. Use only facts from the release note and demo notes.
+     - Name the systems it draws on through the company brain: the same sources as the video's opening, and no others.
      - End with "(Hive is built by Object Edge.)".
      - No hype words, no hashtags, no em dashes.
    - **Audience:** "No, it's not made for kids".
