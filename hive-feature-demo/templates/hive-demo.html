@@ -1,0 +1,638 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Hive · What's new · Google Chat prepares emails and meetings</title>
+</head>
+<body>
+<style>
+  @font-face { font-family: 'Plex Sans'; font-weight: 400; src: url('fonts/ibm-plex-sans-latin-400-normal.woff2') format('woff2'); font-display: block; }
+  @font-face { font-family: 'Plex Sans'; font-weight: 500; src: url('fonts/ibm-plex-sans-latin-500-normal.woff2') format('woff2'); font-display: block; }
+  @font-face { font-family: 'Plex Sans'; font-weight: 600; src: url('fonts/ibm-plex-sans-latin-600-normal.woff2') format('woff2'); font-display: block; }
+  @font-face { font-family: 'Plex Cond'; font-weight: 600; src: url('fonts/ibm-plex-sans-condensed-latin-600-normal.woff2') format('woff2'); font-display: block; }
+  @font-face { font-family: 'Plex Cond'; font-weight: 700; src: url('fonts/ibm-plex-sans-condensed-latin-700-normal.woff2') format('woff2'); font-display: block; }
+  @font-face { font-family: 'Plex Mono'; font-weight: 400; src: url('fonts/ibm-plex-mono-latin-400-normal.woff2') format('woff2'); font-display: block; }
+  @font-face { font-family: 'Plex Mono'; font-weight: 600; src: url('fonts/ibm-plex-mono-latin-600-normal.woff2') format('woff2'); font-display: block; }
+  :root {
+    /* Hive (sampled from product screenshots) */
+    --bg: #0a0d12; --surface: #11151c; --surface-2: #161b24; --surface-3: #1b212c; --line: #242b37; --line-2: #3a4250;
+    --ink: #dfe3ea; --ink-2: #b4bcc9; --ink-3: #9ea7b5; --muted: #687284;
+    --blue: #5b8def; --blue-link: #8fb3ff; --blue-bg: #0f1626; --blue-border: #22385e;
+    --amber: #f2b544; --orange: #ff8a4c; --green: #3cc486; --green-dim: #16392e; --green-bg: #112722;
+    --sans: 'Plex Sans', system-ui, sans-serif; --cond: 'Plex Cond', 'Plex Sans', sans-serif; --mono: 'Plex Mono', ui-monospace, monospace;
+  }
+  html, body { margin: 0; height: 100%; background: #000; overflow: hidden; }
+  #stage { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: hidden; transform-origin: 0 0; background: var(--bg);
+    font-family: var(--sans); color: var(--ink); -webkit-font-smoothing: antialiased; font-variant-numeric: tabular-nums; }
+  .abs { position: absolute; }
+  #cam { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; transform-origin: 0 0; }
+  /* shell */
+  #side { position: absolute; left: 0; top: 0; width: 232px; height: 1080px; background: var(--surface); border-right: 1px solid var(--line); }
+  .brand { position: absolute; left: 16px; top: 12px; display: flex; gap: 12px; align-items: center; }
+  .brand b { font: 700 19px/1 var(--cond); letter-spacing: .06em; color: var(--ink); display: block; }
+  .brand i { font: 400 10.5px/1 var(--mono); letter-spacing: .1em; color: var(--ink-3); font-style: normal; display: block; margin-top: 7px; }
+  .sidehead { position: absolute; left: 0; right: 0; top: 0; height: 64px; border-bottom: 1px solid var(--line); }
+  .jump { position: absolute; left: 12px; right: 12px; top: 78px; height: 38px; border: 1px dashed var(--line-2); border-radius: 10px; display: flex; align-items: center; gap: 10px; padding: 0 12px; box-sizing: border-box; font-size: 14px; color: var(--ink-2); }
+  .jump .k { margin-left: auto; font: 400 11px var(--mono); border: 1px solid var(--line-2); border-radius: 5px; padding: 3px 6px; color: var(--ink-3); }
+  .sec { position: absolute; left: 20px; font: 600 11px/1 var(--mono); letter-spacing: .14em; color: var(--ink); }
+  .item { position: absolute; left: 8px; right: 8px; height: 34px; border-radius: 8px; display: flex; align-items: center; padding: 0 12px; box-sizing: border-box; font-size: 15px; color: var(--ink-2); }
+  .item .n { margin-left: auto; font: 400 12px var(--mono); color: var(--ink-3); }
+  .item.on { background: var(--line); color: var(--ink); font-weight: 600; }
+  #badge { margin-left: auto; width: 26px; height: 26px; border-radius: 50%; background: var(--amber); color: #1a1406; font: 600 12px/26px var(--mono); text-align: center; }
+  .user { position: absolute; left: 14px; right: 14px; bottom: 50px; display: flex; align-items: center; gap: 10px; font-size: 14px; }
+  .user .av { width: 30px; height: 30px; border-radius: 50%; background: #2b3242; display: grid; place-items: center; font: 600 12px var(--sans); color: var(--ink-2); }
+  .user small { display: block; font: 400 10px var(--mono); letter-spacing: .08em; color: var(--ink-3); }
+  #top { position: absolute; left: 232px; right: 0; top: 0; height: 64px; border-bottom: 1px solid var(--line); background: var(--bg); }
+  .ptitle { position: absolute; left: 28px; top: 21px; font: 700 21px/1 var(--cond); letter-spacing: .05em; color: var(--ink); display: flex; align-items: baseline; gap: 14px; }
+  .pdate { font: 400 12px/1 var(--mono); letter-spacing: .08em; color: var(--ink-3); }
+  .seg { position: absolute; right: 196px; top: 13px; height: 36px; border: 1px solid var(--line); border-radius: 8px; display: flex; align-items: center; padding: 3px; gap: 2px; box-sizing: border-box; }
+  .seg span { font-size: 14px; color: var(--ink-2); padding: 6px 12px; border-radius: 6px; }
+  .seg span.on { background: var(--line); color: var(--ink); font-weight: 600; }
+  .btn-o { position: absolute; right: 72px; top: 13px; height: 36px; border: 1px solid var(--line-2); border-radius: 8px; padding: 0 14px; font-size: 14px; color: var(--ink-2); display: flex; align-items: center; box-sizing: border-box; }
+  #foot { position: absolute; left: 232px; right: 0; bottom: 0; height: 36px; border-top: 1px solid var(--line); background: var(--surface); display: flex; align-items: center; justify-content: space-between; padding: 0 28px; box-sizing: border-box; font: 400 10.5px var(--mono); letter-spacing: .14em; color: var(--ink-3); }
+  .page { position: absolute; left: 232px; right: 0; top: 64px; bottom: 36px; }
+  .col { position: absolute; left: 224px; width: 1240px; }
+  /* today */
+  .hello { font: 600 40px/1.1 var(--cond); color: var(--ink); margin: 0; }
+  .sub { font-size: 16px; color: var(--ink-2); margin: 10px 0 0; }
+  .stats { position: absolute; right: 0; top: 4px; display: flex; gap: 40px; text-align: center; }
+  .stats b { display: block; font: 600 38px/1 var(--cond); }
+  .stats i { display: block; font: 400 11px/1 var(--mono); letter-spacing: .12em; color: var(--ink-2); font-style: normal; margin-top: 8px; }
+  .card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; }
+  .chead { display: flex; align-items: center; gap: 12px; padding: 20px 22px 8px; }
+  .chead h4 { margin: 0; font: 700 18px/1 var(--cond); letter-spacing: .06em; color: var(--ink); }
+  .chead .r { margin-left: auto; font: 400 11px var(--mono); letter-spacing: .12em; color: var(--ink-3); }
+  .rrow { display: flex; align-items: center; gap: 22px; padding: 16px 22px; border-top: 1px solid var(--line); position: relative; }
+  .rrow:first-of-type { border-top: 0; }
+  .rrow .ty { width: 70px; flex: none; font: 600 11px var(--mono); letter-spacing: .1em; color: var(--blue-link); }
+  .rrow .tx { flex: 1; min-width: 0; }
+  .rrow .tx b { display: block; font: 600 16px/1.3 var(--sans); color: var(--ink); }
+  .rrow .tx span { display: block; font-size: 14px; color: var(--ink-2); margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .rrow .src { display: inline-block; margin-top: 8px; font: 400 10.5px var(--mono); letter-spacing: .1em; color: var(--ink-3); }
+  .rrow .src.new { color: var(--blue-link); }
+  .bt { flex: none; height: 36px; padding: 0 16px; border-radius: 8px; border: 1px solid var(--blue-border); background: var(--blue-bg); color: var(--blue-link); font: 500 14px/34px var(--sans); box-sizing: border-box; }
+  .dots { flex: none; width: 26px; color: var(--ink-3); font: 600 18px/1 var(--sans); text-align: center; }
+  .amber-pill { background: var(--amber); color: #1a1406; font: 600 11px/1 var(--mono); letter-spacing: .1em; padding: 6px 9px; border-radius: 999px; }
+  .rv { border-color: var(--amber); }
+  .bar { height: 10px; border-radius: 3px; background: var(--line-2); position: relative; overflow: hidden; }
+  .bar i { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 3px; }
+  /* review states */
+  .newglow { position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--blue); border-radius: 3px; }
+  .donefill { position: absolute; inset: 0; background: var(--green-bg); opacity: 0; }
+  .status { position: absolute; right: 70px; top: 50%; margin-top: -12px; font: 600 13px/24px var(--mono); letter-spacing: .08em; color: var(--green); opacity: 0; display: flex; align-items: center; gap: 8px; white-space: nowrap; }
+  /* chat window (generic chat client, light) */
+  #chat { position: absolute; left: 1036px; top: 120px; width: 780px; height: 820px; background: #fff; border-radius: 18px; box-shadow: 0 40px 120px rgba(0,0,0,.55); color: #1f2329; overflow: hidden; }
+  #chatlabel { position: absolute; left: 1040px; top: 78px; display: flex; align-items: center; gap: 10px; font: 500 20px var(--sans); color: var(--ink); }
+  .chd { height: 72px; border-bottom: 1px solid #e6e8eb; display: flex; align-items: center; gap: 14px; padding: 0 24px; }
+  .hav { width: 40px; height: 40px; border-radius: 50%; background: #0b0d12; display: grid; place-items: center; }
+  .chd b { font: 600 19px var(--sans); }
+  .chd .app { font: 500 11px var(--sans); color: #5f6670; border: 1px solid #d5d9de; border-radius: 4px; padding: 1px 5px; margin-left: 8px; }
+  .chd small { display: block; font-size: 13px; color: #5f6670; margin-top: 2px; }
+  .msg { position: absolute; left: 24px; right: 24px; display: flex; gap: 14px; }
+  .mav { width: 36px; height: 36px; border-radius: 50%; flex: none; display: grid; place-items: center; font: 600 13px var(--sans); }
+  .mname { font: 600 15px var(--sans); color: #1f2329; } .mname small { font-weight: 400; color: #6b727c; margin-left: 8px; font-size: 13px; }
+  .mtext { font-size: 18px; line-height: 1.45; color: #1f2329; margin-top: 4px; }
+  .pcard { margin-top: 10px; border: 1px solid #dfe3e8; border-radius: 14px; overflow: hidden; width: 600px; }
+  .pcard .ph { padding: 16px 20px 6px; font: 600 18px var(--sans); }
+  .pcard .ps { padding: 0 20px 12px; font-size: 14px; color: #5f6670; }
+  .prow { display: flex; align-items: center; gap: 14px; padding: 13px 20px; border-top: 1px solid #eceff2; }
+  .prow b { display: block; font: 600 16px var(--sans); } .prow span { display: block; font-size: 14px; color: #5f6670; margin-top: 1px; }
+  .prow .ic { width: 38px; height: 38px; border-radius: 10px; background: #eef2fb; display: grid; place-items: center; flex: none; }
+  .pbtn { margin: 6px 20px 18px; display: inline-flex; height: 40px; align-items: center; padding: 0 18px; border-radius: 20px; background: #1f6feb; color: #fff; font: 600 15px var(--sans); }
+  .cin { position: absolute; left: 24px; right: 24px; bottom: 22px; height: 54px; border-radius: 27px; background: #f1f3f5; display: flex; align-items: center; padding: 0 22px; font-size: 17px; color: #1f2329; gap: 12px; }
+  .cin .ph2 { color: #6b727c; }
+  .strike { position: absolute; left: 0; right: 0; top: 50%; height: 2px; background: #c0392b; transform-origin: left center; }
+  .before { font: 600 11px var(--mono); letter-spacing: .12em; color: #b23b2e; border: 1px solid #e7b9b2; border-radius: 4px; padding: 2px 6px; margin-left: 10px; }
+  /* overlays */
+  #dim { position: absolute; inset: 0; background: var(--bg); opacity: 0; }
+  .ov { position: absolute; inset: 0; opacity: 0; }
+  .kick { font: 400 18px/1 var(--mono); letter-spacing: .18em; color: var(--ink-3); text-transform: uppercase; }
+  .big { font: 600 92px/1.02 var(--cond); color: var(--ink); margin: 26px 0 0; letter-spacing: -0.005em; }
+  .big .am { color: var(--amber); }
+  .cap { position: absolute; left: 50%; bottom: 74px; transform: translateX(-50%); }
+  .capi { position: absolute; left: 0; right: 0; margin: 0 auto; width: max-content; bottom: 70px; white-space: nowrap; display: flex; align-items: center; gap: 16px; background: rgba(18,21,27,.94); border: 1px solid var(--line-2); border-radius: 999px; padding: 16px 30px 16px 18px; font: 500 30px/1 var(--sans); color: var(--ink); box-shadow: 0 18px 50px rgba(0,0,0,.45); }
+  .capi .no { width: 38px; height: 38px; border-radius: 50%; background: var(--amber); color: #1a1406; font: 600 17px/38px var(--mono); text-align: center; }
+  .acard { position: absolute; top: 330px; width: 680px; height: 420px; box-sizing: border-box; background: var(--surface); border: 1px solid var(--line); border-radius: 22px; padding: 40px 44px; }
+  .acard .k2 { font: 400 15px/1 var(--mono); letter-spacing: .16em; color: var(--ink-3); display: flex; align-items: center; gap: 14px; }
+  .acard h3 { margin: 22px 0 26px; font: 600 46px/1.08 var(--cond); color: var(--ink); }
+  .chk { display: flex; align-items: center; gap: 16px; font-size: 24px; color: var(--ink); margin-top: 18px; }
+  .tile { width: 56px; height: 56px; border-radius: 14px; background: var(--surface-3); display: grid; place-items: center; }
+  /* Preview controls (hidden when rendering) */
+  #ctl { position: fixed; left: 0; right: 0; bottom: 0; display: flex; gap: 12px; align-items: center;
+    padding: 10px 16px; background: rgba(0,0,0,.72); color: #eee; font: 13px system-ui; z-index: 9; }
+  #ctl button { background: #333; color: #fff; border: 0; border-radius: 6px; padding: 6px 12px; cursor: pointer; }
+  #ctl input { flex: 1; }
+  #chapters { display: flex; gap: 6px; flex-wrap: wrap; max-width: 45%; }
+  #chapters span { cursor: pointer; opacity: .75; } #chapters span:hover { opacity: 1; text-decoration: underline; }
+  body.render #ctl { display: none; }
+</style>
+
+<div id="stage">
+ <div id="cam">
+  <aside id="side">
+    <div class="sidehead"><div class="brand">
+      <svg width="36" height="36" viewBox="-18 -18 36 36" aria-hidden="true"><g fill="none" stroke="#b98536" stroke-width="1.1" opacity=".85">
+        <polygon points="0,-6 5.2,-3 5.2,3 0,6 -5.2,3 -5.2,-3"/><polygon points="0,-18 5.2,-15 5.2,-9 0,-6 -5.2,-9 -5.2,-15"/><polygon points="0,6 5.2,9 5.2,15 0,18 -5.2,15 -5.2,9"/>
+        <polygon points="10.4,-12 15.6,-9 15.6,-3 10.4,0 5.2,-3 5.2,-9"/><polygon points="-10.4,-12 -5.2,-9 -5.2,-3 -10.4,0 -15.6,-3 -15.6,-9"/>
+        <polygon points="10.4,0 15.6,3 15.6,9 10.4,12 5.2,9 5.2,3"/><polygon points="-10.4,0 -5.2,3 -5.2,9 -10.4,12 -15.6,9 -15.6,3"/></g>
+        <polygon points="0,-4 3.5,-2 3.5,2 0,4 -3.5,2 -3.5,-2" fill="#e9b75a"/></svg>
+      <div><b>HIVE</b><i>OBJECT EDGE</i></div></div></div>
+    <div class="jump"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#b5bcc8" stroke-width="1.6"><circle cx="7" cy="7" r="5"/><path d="M11 11l3.5 3.5"/></svg>Jump to…<span class="k">⌘K</span></div>
+    <div class="sec" style="top:140px">ACT</div>
+    <div class="item" id="it-today" style="top:156px">Today</div>
+    <div class="item" style="top:192px">Tasks<span class="n">64</span></div>
+    <div class="item" style="top:228px">Meetings<span class="n">6</span></div>
+    <div class="item" id="it-review" style="top:264px">Review<span id="badge">7</span></div>
+    <div class="item" style="top:300px">Routines</div>
+    <div class="sec" style="top:352px">APPLICATIONS</div>
+    <div class="item" style="top:368px">Mentat</div><div class="item" style="top:404px">Scout</div><div class="item" style="top:440px">Waggle</div><div class="item" style="top:476px">Sales Command Center</div>
+    <div class="sec" style="top:528px">STRATEGY</div>
+    <div class="item" style="top:544px">Decisions<span class="n">812</span></div><div class="item" style="top:580px">Signals</div><div class="item" style="top:616px">Initiatives</div><div class="item" style="top:652px">Insights<span class="n">38</span></div>
+    <div class="sec" style="top:704px">LEARN</div>
+    <div class="item" style="top:720px">Hive</div><div class="item" style="top:756px">Documents</div><div class="item" style="top:792px">Agent Actions</div><div class="item" style="top:828px">Files</div>
+    <div class="user"><div class="av">JL</div><div>Jordan Lee<small>ADMIN</small></div></div>
+  </aside>
+  <header id="top">
+    <div class="ptitle"><span id="ptitle">TODAY</span><span class="pdate">WED 11 NOV</span></div>
+    <div class="seg"><span class="on">Dashboard</span><span>Split</span><span>Focus</span></div>
+    <div class="btn-o">Show Sayya</div>
+    <svg class="abs" style="right:28px;top:22px" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#b5bcc8" stroke-width="1.5"><circle cx="10" cy="10" r="8"/><path d="M7.8 7.6a2.3 2.3 0 1 1 3 2.2c-.6.3-.8.7-.8 1.3M10 13.8v.2"/></svg>
+  </header>
+
+  <!-- Today (behind the chat) -->
+  <section class="page" id="pg-today">
+    <div class="col" style="top:72px">
+      <h1 class="hello">Good afternoon, Jordan</h1>
+      <p class="sub">6 meetings today. Next: Northwind scope review at 2:00 PM.</p>
+      <div class="stats"><div><b style="color:var(--amber)">7</b><i>TO APPROVE</i></div><div><b style="color:var(--orange)">1</b><i>OVERDUE</i></div><div><b>0</b><i>DUE TODAY</i></div><div><b>6</b><i>MEETINGS</i></div></div>
+    </div>
+    <div class="col card" style="top:200px">
+      <div class="chead"><h4>RECOMMENDED NOW</h4><span class="r">3 FOR YOU · UPDATED 1:12 PM</span></div>
+      <div class="rrow"><div class="ty">EMAIL</div><div class="tx"><b>Reply to Daniel Ortiz at Lumen Freight</b><span>Daniel asked for the updated rollout dates before Friday's steering call and is waiting on you.</span></div><div class="bt">Ask Sayya →</div><div class="dots">···</div></div>
+      <div class="rrow"><div class="ty">MEETING</div><div class="tx"><b>Prep for the Brightline Health renewal</b><span>Renewal review is Thursday; last quarter's usage and open asks are ready to pull together.</span></div><div class="bt">Ask Sayya →</div><div class="dots">···</div></div>
+      <div class="rrow"><div class="ty">TASK</div><div class="tx"><b>Close out the Q4 pricing decision</b><span>Two options are on the table; finance is waiting on your call to update the forecast.</span></div><div class="bt">Ask Sayya →</div><div class="dots">···</div></div>
+    </div>
+    <div class="col card rv" style="top:570px;padding-bottom:22px">
+      <div class="chead"><h4>REVIEW</h4><span class="amber-pill">7 TO APPROVE</span><span class="r">42 WAITING</span></div>
+      <div style="padding:10px 22px 0"><div style="display:flex;justify-content:space-between;font-size:15px;color:var(--ink-2);margin-bottom:8px"><span>To approve</span><b style="color:var(--ink)">7</b></div><div class="bar"><i style="width:9%;background:var(--amber)"></i></div>
+      <div style="display:flex;justify-content:space-between;font-size:15px;color:var(--ink-2);margin:18px 0 8px"><span>To confirm</span><b style="color:var(--ink)">35</b></div><div class="bar"><i style="width:100%;background:var(--blue)"></i></div></div>
+    </div>
+  </section>
+
+  <!-- Review -->
+  <section class="page" id="pg-review" style="opacity:0">
+    <div class="col" style="top:56px">
+      <div class="kick" style="font-size:12px">ACT · REVIEW</div>
+      <h1 class="hello" style="margin-top:12px">Review</h1>
+      <p class="sub">Things Hive prepared that need your yes. Nothing goes out until you approve it.</p>
+    </div>
+    <div class="col card rv" style="top:206px" id="rvcard">
+      <div class="chead"><h4>TO APPROVE</h4><span class="amber-pill" id="rvcount">9</span><span class="r">FROM EVERY CHANNEL</span></div>
+      <div class="rrow" id="r1"><div class="newglow"></div><div class="donefill" id="r1f"></div><div class="ty" style="position:relative">EMAIL</div><div class="tx" style="position:relative"><b>Email Priya Raman: revised scope</b><span>To priya@northwindlabs.com · “Hi Priya, attached is the revised scope for the pilot…”</span><span class="src new">FROM GOOGLE CHAT · JUST NOW</span></div><div class="bt" id="r1b" style="position:relative">Approve &amp; send</div><div class="dots" style="position:relative">···</div>
+        <div class="status" id="r1s"><svg width="20" height="20" viewBox="-10 -10 20 20"><circle r="9" fill="var(--green)"/><path d="M-4 0l2.7 2.8L4.5-3" fill="none" stroke="#0b1712" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>SENT</div></div>
+      <div class="rrow" id="r2"><div class="newglow"></div><div class="donefill" id="r2f"></div><div class="ty" style="position:relative">MEETING</div><div class="tx" style="position:relative"><b>Book 30 min with Priya Raman</b><span>Thu 13 Nov · 11:30–12:00 · video call · invite drafted with the scope attached</span><span class="src new">FROM GOOGLE CHAT · JUST NOW</span></div><div class="bt" id="r2b" style="position:relative">Approve &amp; book</div><div class="dots" style="position:relative">···</div>
+        <div class="status" id="r2s"><svg width="20" height="20" viewBox="-10 -10 20 20"><circle r="9" fill="var(--green)"/><path d="M-4 0l2.7 2.8L4.5-3" fill="none" stroke="#0b1712" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>BOOKED · THU 11:30</div></div>
+      <div class="rrow"><div class="ty">EMAIL</div><div class="tx"><b>Reply to Daniel Ortiz at Lumen Freight</b><span>Draft confirms the new rollout dates and offers two times for the steering call.</span><span class="src">FROM SAYYA · 2H AGO</span></div><div class="bt">Approve &amp; send</div><div class="dots">···</div></div>
+      <div class="rrow"><div class="ty">TASK</div><div class="tx"><b>Send the Brightline renewal summary</b><span>Usage, open asks and the proposed terms in one page for Thursday.</span><span class="src">FROM A ROUTINE · 5H AGO</span></div><div class="bt">Approve</div><div class="dots">···</div></div>
+    </div>
+  </section>
+
+  <footer id="foot"><span>© 2026 HIVE · OBJECT EDGE</span><span>WHAT'S NEW &nbsp; STATUS &nbsp; <span id="fpage">TODAY</span> &nbsp; V1.0.0</span></footer>
+
+  <!-- cursor (lives in camera space so it zooms with the UI) -->
+  <svg id="cursor" class="abs" style="left:0;top:0;opacity:0" width="40" height="40" viewBox="0 0 40 40" aria-hidden="true">
+    <circle id="ring" cx="4" cy="4" r="18" fill="none" stroke="#96b2f9" stroke-width="3" opacity="0"/>
+    <g id="arrow"><path d="M4 3 L4 29 L11 22.5 L15.5 33 L20 31 L15.6 20.8 L25 20.8 Z" fill="#fff" stroke="#111" stroke-width="1.8" stroke-linejoin="round"/></g>
+  </svg>
+ </div>
+
+ <div id="dim"></div>
+
+ <!-- generic chat client window -->
+ <div id="chatlabel"><svg width="26" height="26" viewBox="0 0 26 26"><path d="M4 5h18v12H11l-5 4v-4H4z" fill="none" stroke="#e0e3e9" stroke-width="2" stroke-linejoin="round"/></svg>Google Chat</div>
+ <div id="chat">
+   <div class="chd"><div class="hav"><svg width="26" height="26" viewBox="-18 -18 36 36"><g fill="none" stroke="#b98536" stroke-width="1.6"><polygon points="0,-6 5.2,-3 5.2,3 0,6 -5.2,3 -5.2,-3"/><polygon points="0,-18 5.2,-15 5.2,-9 0,-6 -5.2,-9 -5.2,-15"/><polygon points="0,6 5.2,9 5.2,15 0,18 -5.2,15 -5.2,9"/><polygon points="10.4,-12 15.6,-9 15.6,-3 10.4,0 5.2,-3 5.2,-9"/><polygon points="-10.4,-12 -5.2,-9 -5.2,-3 -10.4,0 -15.6,-3 -15.6,-9"/><polygon points="10.4,0 15.6,3 15.6,9 10.4,12 5.2,9 5.2,3"/><polygon points="-10.4,0 -5.2,3 -5.2,9 -10.4,12 -15.6,9 -15.6,3"/></g><polygon points="0,-4 3.5,-2 3.5,2 0,4 -3.5,2 -3.5,-2" fill="#e9b75a"/></svg></div>
+     <div><b>Sayya</b><span class="app">App</span><small>Direct message · Hive</small></div></div>
+   <div class="msg" id="m-user" style="top:104px"><div class="mav" style="background:#dbe4f7;color:#2a4a8f">JL</div><div><div class="mname">Jordan Lee<small>now</small></div><div class="mtext">Email Priya the revised scope and book 30 min with her Thursday</div></div></div>
+   <div class="msg" id="m-before" style="top:212px"><div class="mav" style="background:#0b0d12"><svg width="20" height="20" viewBox="-18 -18 36 36"><polygon points="0,-9 7.8,-4.5 7.8,4.5 0,9 -7.8,4.5 -7.8,-4.5" fill="#e9b75a"/></svg></div><div><div class="mname">Sayya<small>App</small><span class="before">BEFORE</span></div><div class="mtext" style="position:relative;color:#6b727c">Sorry, I can't send emails or book meetings from Chat.<div class="strike" id="strike"></div></div></div></div>
+   <div class="msg" id="m-reply" style="top:212px"><div class="mav" style="background:#0b0d12"><svg width="20" height="20" viewBox="-18 -18 36 36"><polygon points="0,-9 7.8,-4.5 7.8,4.5 0,9 -7.8,4.5 -7.8,-4.5" fill="#e9b75a"/></svg></div><div><div class="mname">Sayya<small>App · now</small></div>
+     <div class="pcard"><div class="ph" id="pc-h">Prepared for your approval</div><div class="ps" id="pc-s">Nothing is sent until you approve it in Hive.</div>
+       <div class="prow" id="pr1"><div class="ic"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#1f6feb" stroke-width="1.7"><rect x="2" y="4" width="16" height="12" rx="2"/><path d="M2.5 5l7.5 6 7.5-6"/></svg></div><div><b>Email to Priya Raman</b><span>Revised scope · Northwind pilot</span></div></div>
+       <div class="prow" id="pr2"><div class="ic"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#1f6feb" stroke-width="1.7"><rect x="2.5" y="4" width="15" height="13" rx="2"/><path d="M2.5 8h15M7 2.5v3M13 2.5v3"/></svg></div><div><b>Meeting with Priya Raman</b><span>Thu 13 Nov · 11:30 · 30 min</span></div></div>
+       <div class="pbtn" id="pc-b">Review in Hive →</div></div></div></div>
+   <div class="cin"><span id="typed">Email Priya the revised scope and book 30 min with her Thursday</span><span class="ph2" id="cph">Message Sayya</span>
+     <svg style="margin-left:auto" width="24" height="24" viewBox="0 0 24 24"><path d="M3 20l18-8L3 4l2 8z" fill="#1f6feb"/></svg></div>
+ </div>
+
+ <!-- items flying from Chat into Hive's Review badge -->
+ <svg id="fly" class="abs" style="left:0;top:0" width="1920" height="1080" aria-hidden="true">
+   <g id="f1" opacity="0"><rect x="-26" y="-26" width="52" height="52" rx="14" fill="#171b23" stroke="#3c424f"/><g transform="translate(-10,-10)" fill="none" stroke="#96b2f9" stroke-width="1.7"><rect x="0" y="2" width="20" height="15" rx="2"/><path d="M.6 3.2L10 10.5l9.4-7.3"/></g></g>
+   <g id="f2" opacity="0"><rect x="-26" y="-26" width="52" height="52" rx="14" fill="#171b23" stroke="#3c424f"/><g transform="translate(-10,-10)" fill="none" stroke="#96b2f9" stroke-width="1.7"><rect x="0.5" y="2" width="19" height="17" rx="2"/><path d="M.5 7h19M5 0v4M15 0v4"/></g></g>
+ </svg>
+
+ <!-- title -->
+ <div class="ov" id="ov-title"><div style="position:absolute;left:150px;top:330px;width:1500px">
+   <div class="kick" id="t-k">What's new in Hive · Wed 11 Nov</div>
+   <h1 class="big" id="t-h">Google Chat can prepare<br><span class="am">emails and meetings.</span></h1></div></div>
+
+ <!-- also in this release -->
+ <div class="ov" id="ov-also">
+   <div class="kick" id="a-k" style="position:absolute;left:250px;top:230px">Also in this release</div>
+   <div class="acard" id="a1" style="left:250px">
+     <div class="k2"><div class="tile"><svg id="sync" width="30" height="30" viewBox="-15 -15 30 30" fill="none" stroke="#96b2f9" stroke-width="2.4" stroke-linecap="round"><path d="M-9 -3a9.5 9.5 0 0 1 16-4.5M9 3a9.5 9.5 0 0 1-16 4.5"/><path d="M8.5 -12v5.2h-5.2M-8.5 12V6.8h5.2"/></svg></div>MENTAT · HOURLY SYNC</div>
+     <h3>Works again</h3>
+     <div class="chk" id="c1"><svg width="30" height="30" viewBox="-15 -15 30 30"><circle r="13" fill="var(--green)"/><path class="ck" d="M-6 0l4 4 8-8" fill="none" stroke="#0b1712" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>Acts on bounces and unsubscribes again</div>
+     <div class="chk" id="c2"><svg width="30" height="30" viewBox="-15 -15 30 30"><circle r="13" fill="var(--green)"/><path class="ck" d="M-6 0l4 4 8-8" fill="none" stroke="#0b1712" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>Checks only campaign people against HubSpot</div>
+   </div>
+   <div class="acard" id="a2" style="left:990px">
+     <div class="k2"><div class="tile"><svg width="28" height="28" viewBox="0 0 28 28" fill="none" stroke="#96b2f9" stroke-width="2"><path d="M7 3h10l5 5v17H7z"/><path d="M17 3v5h5M11 14h8M11 19h8"/></svg></div>BLOG · GOOGLE DOC</div>
+     <h3>A blog post from a Google Doc can be submitted for review</h3>
+     <div style="position:relative;height:70px;margin-top:6px">
+       <div id="docchip" style="position:absolute;left:0;top:8px;height:52px;display:flex;align-items:center;gap:12px;padding:0 18px;border:1px solid var(--line-2);border-radius:12px;background:var(--surface-2);font-size:20px;color:var(--ink)"><svg width="20" height="20" viewBox="0 0 28 28" fill="none" stroke="#b5bcc8" stroke-width="2"><path d="M7 3h10l5 5v17H7z"/><path d="M17 3v5h5"/></svg>Blog draft</div>
+       <div id="docfly" style="position:absolute;left:150px;top:20px;width:30px;height:30px;border-radius:8px;background:var(--surface-3);border:1px solid var(--line-2);display:grid;place-items:center;opacity:0"><svg width="16" height="16" viewBox="0 0 28 28" fill="none" stroke="#96b2f9" stroke-width="2.4"><path d="M7 3h10l5 5v17H7z"/></svg></div>
+       <svg style="position:absolute;left:190px;top:22px" width="150" height="24"><path id="darrow" d="M4 12H136M124 3l12 9-12 9" fill="none" stroke="#6a7282" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+       <div id="inreview" style="position:absolute;left:356px;top:14px;height:40px;display:flex;align-items:center;gap:10px;padding:0 18px;border-radius:999px;background:var(--amber);color:#1a1406;font:600 16px var(--mono);letter-spacing:.1em">IN REVIEW</div>
+     </div>
+   </div>
+ </div>
+
+ <!-- end -->
+ <div class="ov" id="ov-end"><div style="position:absolute;left:0;right:0;top:360px;text-align:center">
+   <svg id="e-mark" width="150" height="150" viewBox="-18 -18 36 36" aria-hidden="true"><g fill="none" stroke="#b98536" stroke-width=".9"><polygon points="0,-6 5.2,-3 5.2,3 0,6 -5.2,3 -5.2,-3"/><polygon points="0,-18 5.2,-15 5.2,-9 0,-6 -5.2,-9 -5.2,-15"/><polygon points="0,6 5.2,9 5.2,15 0,18 -5.2,15 -5.2,9"/><polygon points="10.4,-12 15.6,-9 15.6,-3 10.4,0 5.2,-3 5.2,-9"/><polygon points="-10.4,-12 -5.2,-9 -5.2,-3 -10.4,0 -15.6,-3 -15.6,-9"/><polygon points="10.4,0 15.6,3 15.6,9 10.4,12 5.2,9 5.2,3"/><polygon points="-10.4,0 -5.2,3 -5.2,9 -10.4,12 -15.6,9 -15.6,3"/></g><polygon points="0,-4 3.5,-2 3.5,2 0,4 -3.5,2 -3.5,-2" fill="#e9b75a"/></svg>
+   <div id="e-w" style="font:700 64px/1 var(--cond);letter-spacing:.12em;color:var(--ink);margin-top:26px">HIVE</div>
+   <div id="e-s" class="kick" style="margin-top:22px">What's new · 11 Nov 2026</div></div></div>
+
+ <!-- captions -->
+ <div class="capi" id="cap1"><span class="no">1</span>Ask Sayya in Google Chat</div>
+ <div class="capi" id="cap2"><span class="no">2</span>Prepared for your approval, instead of failing</div>
+ <div class="capi" id="cap3"><span class="no">3</span>Approve it in Hive</div>
+</div>
+
+<div id="ctl">
+  <button id="play">Play</button>
+  <span id="time">0.00</span>
+  <input id="scrub" type="range" min="0" max="1000" value="0">
+  <div id="chapters"></div>
+</div>
+
+<script>
+/* ---------- Motion: a tiny deterministic timeline (no dependencies) ---------- */
+const Motion = (() => {
+  const EASE = {
+    linear: t => t,
+    inCubic: t => t * t * t,
+    outCubic: t => 1 - Math.pow(1 - t, 3),
+    inOutCubic: t => (t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2),
+    outQuint: t => 1 - Math.pow(1 - t, 5),
+    outExpo: t => (t >= 1 ? 1 : 1 - Math.pow(2, -10 * t)),
+    inOutSine: t => -(Math.cos(Math.PI * t) - 1) / 2,
+    outBack: t => { const c1 = 1.70158, c3 = c1 + 1; return 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2); },
+  };
+  // cubic-bezier(x1, y1, x2, y2) as an ease function, for design-system curves
+  function bezier(x1, y1, x2, y2) {
+    const cx = 3 * x1, bx = 3 * (x2 - x1) - cx, ax = 1 - cx - bx, cy = 3 * y1, by = 3 * (y2 - y1) - cy, ay = 1 - cy - by;
+    const sx = t => ((ax * t + bx) * t + cx) * t, sy = t => ((ay * t + by) * t + cy) * t, dx = t => (3 * ax * t + 2 * bx) * t + cx;
+    return x => {
+      if (x <= 0) return 0; if (x >= 1) return 1;
+      let t = x;
+      for (let i = 0; i < 8; i++) { const e = sx(t) - x; if (Math.abs(e) < 1e-6) break; const d = dx(t); if (Math.abs(d) < 1e-6) break; t -= e / d; }
+      if (Math.abs(sx(t) - x) > 1e-4) { let lo = 0, hi = 1; t = x; for (let i = 0; i < 40; i++) { if (sx(t) < x) lo = t; else hi = t; t = (lo + hi) / 2; } }
+      return sy(t);
+    };
+  }
+  const DEF = { opacity: 1, x: 0, y: 0, scale: 1, rotate: 0, blur: 0, draw: 1, text: 1, count: 0, clip: 1 };
+  const tracks = new Map();   // element -> Map(prop -> [segments])
+  const hooks = [];           // custom fn(t) for anything else (canvas, charts)
+  const scenes = [];
+  let dirty = true, duration = 0;
+
+  const els = sel => (typeof sel === 'string' ? [...document.querySelectorAll(sel)]
+    : Array.isArray(sel) ? sel.flatMap(els) : sel ? [sel] : []);
+
+  // tween(selector, { at, dur, ease, from: {...}, to: {...}, stagger, format })
+  // props: opacity x y scale rotate blur | draw (SVG stroke 0..1) | text (typewriter 0..1) | count (number) | clip (wipe 0..1)
+  function tween(sel, o) {
+    const list = els(sel);
+    if (!list.length) console.warn('Motion: nothing matches', sel);
+    list.forEach((el, i) => {
+      const at = o.at + (o.stagger || 0) * i;
+      const m = tracks.get(el) || new Map(); tracks.set(el, m);
+      const props = new Set([...Object.keys(o.from || {}), ...Object.keys(o.to || {})]);
+      props.forEach(p => {
+        const arr = m.get(p) || []; m.set(p, arr);
+        arr.push({ at, dur: o.dur ?? 0.6, ease: typeof o.ease === 'function' ? o.ease : EASE[o.ease || 'outCubic'] || EASE.outCubic, from: o.from?.[p], to: o.to?.[p] });
+      });
+      if (props.has('text') && el.dataset.full === undefined) el.dataset.full = el.textContent;
+      if (props.has('draw') && el.getTotalLength) { const L = el.getTotalLength(); el.style.strokeDasharray = L; el.dataset.len = L; }
+      if (props.has('count')) el._fmt = o.format || (n => Math.round(n).toLocaleString('en-US'));
+    });
+    dirty = true;
+    return api;
+  }
+
+  // scene(selector, start, end, { in: 0.5, out: 0.5 }) — fades the whole scene; in/out 0 = hard cut.
+  // For a crossfade, start the next scene at (end - out) of the previous one.
+  function scene(sel, start, end, o = {}) {
+    const el = els(sel)[0];
+    const fin = o.in ?? 0.5, fout = o.out ?? 0.5;
+    scenes.push({ el, start, end, title: o.title || el.id });
+    tween(el, { at: start, dur: fin || 0.0001, ease: 'linear', from: { opacity: 0 }, to: { opacity: 1 } });
+    tween(el, { at: end - fout, dur: fout || 0.0001, ease: 'linear', to: { opacity: 0 } });
+    duration = Math.max(duration, end);
+    return api;
+  }
+
+  function finalize() {
+    for (const m of tracks.values()) for (const [p, arr] of m) {
+      arr.sort((a, b) => a.at - b.at);
+      arr.forEach((s, i) => {
+        // from-only tween: animate from the given value to the element's natural value
+        // to-only tween: animate from wherever the previous tween left it
+        s.f = s.from ?? (i ? arr[i - 1].t : DEF[p]);
+        s.t = s.to ?? (s.from !== undefined ? DEF[p] : s.f);
+      });
+    }
+    dirty = false;
+  }
+
+  function valueAt(arr, t) {
+    if (t < arr[0].at) return arr[0].f;
+    let s = arr[0];
+    for (const x of arr) if (x.at <= t) s = x; else break;
+    const p = Math.min(1, Math.max(0, (t - s.at) / s.dur));
+    return s.f + (s.t - s.f) * s.ease(p);
+  }
+
+  function apply(el, v) {
+    if ('x' in v || 'y' in v || 'scale' in v || 'rotate' in v) {
+      const tr = `translate(${v.x ?? 0}px, ${v.y ?? 0}px) scale(${v.scale ?? 1}) rotate(${v.rotate ?? 0}deg)`;
+      if (el instanceof SVGElement) { el.style.transformBox = 'fill-box'; el.style.transformOrigin = 'center'; }
+      el.style.transform = tr;
+    }
+    if ('opacity' in v) el.style.opacity = v.opacity;
+    if ('blur' in v) el.style.filter = v.blur > 0.01 ? `blur(${v.blur}px)` : 'none';
+    if ('draw' in v) el.style.strokeDashoffset = el.dataset.len * (1 - v.draw);
+    if ('text' in v) { const f = el.dataset.full; el.textContent = f.slice(0, Math.round(f.length * v.text)); }
+    if ('count' in v) el.textContent = el._fmt(v.count);
+    if ('clip' in v) el.style.clipPath = `inset(-20% ${(1 - v.clip) * 100}% -20% 0)`;
+  }
+
+  function seek(t) {
+    if (dirty) finalize();
+    for (const [el, m] of tracks) {
+      const v = {};
+      for (const [p, arr] of m) v[p] = valueAt(arr, t);
+      apply(el, v);
+    }
+    for (const s of scenes) s.el.style.visibility = (t >= s.start - 0.001 && t <= s.end + 0.001) ? 'visible' : 'hidden';
+    for (const h of hooks) h(t);
+  }
+
+  // words(selector, { at, stagger, dur, ease, cls }): reveal a headline word by word, at reading pace.
+  // Splits text into inline-block spans once; cls is added to each word (e.g. a gradient-text class).
+  function words(sel, o = {}) {
+    els(sel).forEach(el => {
+      if (!el._words) {
+        const out = [];
+        const walk = n => [...n.childNodes].forEach(c => {
+          if (c.nodeType === 3) {
+            const frag = document.createDocumentFragment();
+            c.textContent.split(/(\s+)/).forEach(part => {
+              if (!part) return;
+              if (/^\s+$/.test(part)) { frag.appendChild(document.createTextNode(part)); return; }
+              const w = document.createElement('span'); w.textContent = part; w.style.display = 'inline-block';
+              if (o.cls) w.className = o.cls; frag.appendChild(w); out.push(w);
+            });
+            n.replaceChild(frag, c);
+          } else if (c.nodeType === 1 && c.tagName !== 'BR') walk(c);
+        });
+        walk(el); el._words = out;
+      }
+      tween(el._words, { at: o.at, dur: o.dur ?? 0.5, stagger: o.stagger ?? 0.09, ease: o.ease || 'outCubic', from: o.from || { opacity: 0, y: 10 } });
+    });
+    return api;
+  }
+
+  // steps(selector, [[t, text], ...]): swap an element's text at given times (section counters, labels).
+  function steps(sel, list) {
+    const el = els(sel)[0];
+    hooks.push(t => { let v = list[0][1]; for (const [at, txt] of list) if (t >= at) v = txt; if (el.textContent !== v) el.textContent = v; });
+    return api;
+  }
+
+  // cue(t, type, opts): a sound moment for soundtrack.py. Types: 'ding' (an achievement; each one steps
+  // up the scale), 'tick' (a soft count/row landing), 'whoosh' (a transition), 'hit' (a low accent).
+  const cues = [];
+  function cue(t, type = 'ding', opts = {}) { cues.push({ t: +t.toFixed(3), type, ...opts }); return api; }
+
+  const api = {
+    tween, scene, seek, EASE, bezier, words, steps, cue, get cues() { return cues; },
+    hook: fn => { hooks.push(fn); return api; },
+    get duration() { return duration; }, set duration(d) { duration = d; },
+    get scenes() { return scenes; },
+  };
+  return api;
+})();
+
+/* ---------- Timeline: Google Chat → prepared for approval → approve in Hive ---------- */
+Motion.EASE.settle = Motion.bezier(0.22, 0.9, 0.24, 1);
+Motion.EASE.camera = Motion.bezier(0.645, 0.045, 0.355, 1);
+const $ = id => document.getElementById(id);
+// layout position of an element's centre, in the coordinate space of `root` (ignores transforms)
+function pos(el, root, fx = 0.5, fy = 0.5) {
+  let x = 0, y = 0, e = el;
+  while (e && e !== root) { x += e.offsetLeft; y += e.offsetTop; e = e.offsetParent; }
+  return { x: x + el.offsetWidth * fx, y: y + el.offsetHeight * fy };
+}
+const cam = $('cam'), stage = $('stage');
+const ease = Motion.EASE.camera, settle = Motion.EASE.settle;
+const lerp = (a, b, p) => a + (b - a) * p, clamp01 = v => Math.max(0, Math.min(1, v));
+const IN = { opacity: 0, y: 14 };
+
+// overlays and dimming
+Motion.tween('#dim', { at: 0, dur: 0.01, ease: 'linear', from: { opacity: 0.84 }, to: { opacity: 0.84 } })
+  .tween('#dim', { at: 2.05, dur: 0.4, ease: 'linear', to: { opacity: 0.5 } })
+  .tween('#dim', { at: 7.45, dur: 0.5, ease: 'linear', to: { opacity: 0 } })
+  .tween('#dim', { at: 13.9, dur: 0.4, ease: 'linear', to: { opacity: 0.86 } })
+  .tween('#dim', { at: 17.5, dur: 0.4, ease: 'linear', to: { opacity: 1 } });
+
+// 1 Title 0–2.3
+Motion.tween('#ov-title', { at: 0, dur: 0.25, ease: 'linear', from: { opacity: 0 }, to: { opacity: 1 } })
+  .tween('#ov-title', { at: 2.0, dur: 0.3, ease: 'inCubic', to: { opacity: 0, y: -24 } })
+  .tween('#t-k', { at: 0.15, dur: 0.5, ease: 'settle', from: { opacity: 0, y: 10 } })
+  .words('#t-h', { at: 0.35, stagger: 0.08, dur: 0.55, ease: 'settle', from: { opacity: 0, y: 16 } });
+
+// 2 Ask in Google Chat 2.3–7.3
+Motion.tween(['#chat', '#chatlabel'], { at: 2.3, dur: 0.6, ease: 'settle', from: { opacity: 0, x: 90 } })
+  .tween(['#chat', '#chatlabel'], { at: 7.5, dur: 0.5, ease: 'inCubic', to: { opacity: 0, x: 140 } })
+  .tween('#cph', { at: 2.9, dur: 0.08, ease: 'linear', from: { opacity: 1 }, to: { opacity: 0 } })
+  .tween('#typed', { at: 2.95, dur: 1.2, ease: 'linear', from: { text: 0 }, to: { text: 1 } })
+  .tween('#typed', { at: 4.25, dur: 0.01, ease: 'linear', to: { text: 0 } })
+  .tween('#cph', { at: 4.3, dur: 0.15, ease: 'linear', to: { opacity: 1 } })
+  .tween('#m-user', { at: 4.28, dur: 0.45, ease: 'settle', from: IN })
+  .tween('#m-before', { at: 4.6, dur: 0.4, ease: 'settle', from: IN })
+  .tween('#strike', { at: 4.98, dur: 0.3, ease: 'inOutCubic', from: { clip: 0 }, to: { clip: 1 } })
+  .tween('#m-before', { at: 5.38, dur: 0.25, ease: 'inCubic', to: { opacity: 0, y: -8 } })
+  .tween('#m-reply', { at: 5.55, dur: 0.5, ease: 'settle', from: IN })
+  .tween('#pr1', { at: 5.9, dur: 0.4, ease: 'settle', from: { opacity: 0, x: -12 } })
+  .tween('#pr2', { at: 6.25, dur: 0.4, ease: 'settle', from: { opacity: 0, x: -12 } })
+  .tween('#pc-b', { at: 6.6, dur: 0.4, ease: 'settle', from: { opacity: 0, y: 8 } });
+
+// captions
+[['#cap1', 2.5, 4.45], ['#cap2', 4.65, 7.35], ['#cap3', 8.4, 13.55]].forEach(([s, a, b]) =>
+  Motion.tween(s, { at: a, dur: 0.45, ease: 'settle', from: { opacity: 0, y: 16 } }).tween(s, { at: b, dur: 0.25, ease: 'inCubic', to: { opacity: 0, y: 10 } }));
+
+// 3 The prepared items fly out of Chat into Hive's Review badge
+(() => {
+  const flights = [['f1', 'pr1', 7.2], ['f2', 'pr2', 7.36]];
+  Motion.hook(t => flights.forEach(([fid, rid, t0]) => {
+    const f = $(fid), dur = 0.62, p = clamp01((t - t0) / dur);
+    if (t < t0 || p >= 1) { f.setAttribute('opacity', 0); return; }
+    const a = pos($(rid).querySelector('.ic'), stage), b = pos($('badge'), cam);
+    const c1 = { x: a.x - 260, y: a.y - 260 }, c2 = { x: b.x + 420, y: b.y - 120 }, u = ease(p), v = 1 - u;
+    const x = v * v * v * a.x + 3 * v * v * u * c1.x + 3 * v * u * u * c2.x + u * u * u * b.x;
+    const y = v * v * v * a.y + 3 * v * v * u * c1.y + 3 * v * u * u * c2.y + u * u * u * b.y;
+    f.setAttribute('transform', `translate(${x} ${y}) scale(${lerp(1.15, 0.45, u)})`);
+    f.setAttribute('opacity', Math.min(1, p * 6, (1 - p) * 10));
+  }));
+})();
+Motion.steps('#badge', [[0, '7'], [7.84, '8'], [8.0, '9'], [11.15, '8'], [12.55, '7']]);
+Motion.steps('#rvcount', [[0, '9'], [11.15, '8'], [12.55, '7']]);
+[7.84, 8.0, 11.15, 12.55].forEach(t => Motion.tween('#badge', { at: t, dur: 0.4, ease: 'outBack', from: { scale: 1.45 }, to: { scale: 1 } }));
+
+// 4 Approve in Hive: cursor, page switch, camera
+const hl = document.createElement('div'); hl.style.cssText = 'position:absolute;left:8px;right:8px;top:156px;height:34px;border-radius:8px;background:#252b36';
+$('side').insertBefore(hl, $('it-today'));
+Motion.tween(hl, { at: 9.08, dur: 0.35, ease: 'settle', from: { y: 0 }, to: { y: 108 } });
+Motion.steps('#ptitle', [[0, 'TODAY'], [9.15, 'REVIEW']]).steps('#fpage', [[0, 'TODAY'], [9.15, 'REVIEW']]);
+Motion.tween('#pg-today', { at: 9.1, dur: 0.2, ease: 'linear', to: { opacity: 0 } })
+  .tween('#pg-review', { at: 9.15, dur: 0.35, ease: 'settle', from: { opacity: 0, y: 12 }, to: { opacity: 1, y: 0 } })
+  .tween(['#r1', '#r2'], { at: 9.45, dur: 0.5, stagger: 0.12, ease: 'settle', from: { opacity: 0, y: -14 } })
+  .tween('#r1b', { at: 11.1, dur: 0.15, ease: 'linear', to: { opacity: 0 } })
+  .tween('#r1f', { at: 11.08, dur: 0.35, ease: 'settle', from: { opacity: 0 }, to: { opacity: 0.95 } })
+  .tween('#r1s', { at: 11.13, dur: 0.4, ease: 'settle', from: { opacity: 0, x: 12 }, to: { opacity: 1, x: 0 } })
+  .tween('#r2b', { at: 12.5, dur: 0.15, ease: 'linear', to: { opacity: 0 } })
+  .tween('#r2f', { at: 12.48, dur: 0.35, ease: 'settle', from: { opacity: 0 }, to: { opacity: 0.95 } })
+  .tween('#r2s', { at: 12.53, dur: 0.4, ease: 'settle', from: { opacity: 0, x: 12 }, to: { opacity: 1, x: 0 } });
+
+// cursor keyframes (targets measured from layout, in camera space) and clicks
+(() => {
+  const cur = $('cursor'), ring = $('ring'), arrow = $('arrow');
+  const P = {
+    start: () => ({ x: 1250, y: 980 }),
+    review: () => pos($('it-review'), cam, 0.3, 0.5),
+    a1: () => pos($('r1b'), cam), a2: () => pos($('r2b'), cam),
+    away: () => { const p = pos($('r2b'), cam); return { x: p.x + 60, y: p.y + 140 }; },
+  };
+  const keys = [[8.35, 'start'], [9.0, 'review'], [10.35, 'review'], [11.0, 'a1'], [11.55, 'a1'], [12.35, 'a2'], [12.9, 'a2'], [13.5, 'away']];
+  const clicks = [9.05, 11.05, 12.45];
+  Motion.hook(t => {
+    const vis = t >= 8.35 && t < 13.5 ? Math.min(1, (t - 8.35) * 5, (13.5 - t) * 3) : 0;
+    cur.style.opacity = vis;
+    if (!vis) return;
+    let i = 0; while (i < keys.length - 1 && t >= keys[i + 1][0]) i++;
+    const [ta, ka] = keys[i], [tb, kb] = keys[Math.min(i + 1, keys.length - 1)];
+    const a = P[ka](), b = P[kb](), p = tb > ta ? ease(clamp01((t - ta) / (tb - ta))) : 1;
+    cur.style.transform = `translate(${lerp(a.x, b.x, p) - 4}px, ${lerp(a.y, b.y, p) - 3}px)`;
+    let press = 1, r = 0, ro = 0;
+    for (const c of clicks) { const d = t - c; if (d > -0.06 && d < 0.12) press = 0.86; if (d >= 0 && d < 0.45) { r = 6 + d * 60; ro = 1 - d / 0.45; } }
+    arrow.setAttribute('transform', `translate(4 3) scale(${press}) translate(-4 -3)`);
+    ring.setAttribute('r', r); ring.setAttribute('opacity', ro);
+  });
+  clicks.forEach(c => Motion.cue(c, 'click'));
+})();
+
+// camera: zoom into the To approve list while approving, then back out
+(() => {
+  const keys = [[0, 1, 960, 540], [9.45, 1, 960, 540], [10.35, 1.5, 1076, 410], [13.35, 1.5, 1076, 410], [14.1, 1, 960, 540]];
+  Motion.hook(t => {
+    let i = 0; while (i < keys.length - 1 && t >= keys[i + 1][0]) i++;
+    const a = keys[i], b = keys[Math.min(i + 1, keys.length - 1)];
+    const p = b[0] > a[0] ? ease(clamp01((t - a[0]) / (b[0] - a[0]))) : 1;
+    const s = lerp(a[1], b[1], p), fx = lerp(a[2], b[2], p), fy = lerp(a[3], b[3], p);
+    cam.style.transform = `translate(${960 - s * fx}px, ${540 - s * fy}px) scale(${s})`;
+  });
+})();
+
+// 5 Also in this release 14–17.6
+Motion.tween('#ov-also', { at: 13.95, dur: 0.35, ease: 'linear', from: { opacity: 0 }, to: { opacity: 1 } })
+  .tween('#ov-also', { at: 17.45, dur: 0.3, ease: 'linear', to: { opacity: 0 } })
+  .tween('#a-k', { at: 14.1, dur: 0.5, ease: 'settle', from: { opacity: 0, y: 10 } })
+  .tween('#a1', { at: 14.2, dur: 0.6, ease: 'settle', from: { opacity: 0, y: 30 } })
+  .tween(['#c1', '#c2'], { at: 14.95, dur: 0.45, stagger: 0.32, ease: 'settle', from: { opacity: 0, x: -14 } })
+  .tween('.ck', { at: 15.05, dur: 0.35, stagger: 0.32, ease: 'settle', from: { draw: 0 }, to: { draw: 1 } })
+  .tween('#a2', { at: 15.5, dur: 0.6, ease: 'settle', from: { opacity: 0, y: 30 } })
+  .tween('#docchip', { at: 15.75, dur: 0.4, ease: 'settle', from: { opacity: 0, x: -12 } })
+  .tween('#darrow', { at: 15.95, dur: 0.4, ease: 'inOutCubic', from: { draw: 0 }, to: { draw: 1 } })
+  .tween('#docfly', { at: 16.0, dur: 0.12, ease: 'linear', from: { opacity: 0 }, to: { opacity: 1 } })
+  .tween('#docfly', { at: 16.0, dur: 0.5, ease: 'camera', from: { x: 0 }, to: { x: 300 } })
+  .tween('#docfly', { at: 16.42, dur: 0.1, ease: 'linear', to: { opacity: 0 } })
+  .tween('#inreview', { at: 16.45, dur: 0.45, ease: 'outBack', from: { opacity: 0, scale: 0.6 } });
+Motion.hook(t => {   // the sync loop spins until it works again, then settles green
+  const s = $('sync'), p = clamp01((t - 14.3) / 0.75);
+  s.style.transform = `rotate(${ease(p) * 540}deg)`; s.style.transformOrigin = 'center';
+  s.setAttribute('stroke', t >= 15.05 ? '#67c18b' : '#96b2f9');
+});
+
+// 6 End 17.6–19.5
+Motion.tween('#ov-end', { at: 17.6, dur: 0.3, ease: 'linear', from: { opacity: 0 }, to: { opacity: 1 } })
+  .tween('#e-mark', { at: 17.7, dur: 0.7, ease: 'settle', from: { opacity: 0, scale: 0.8, rotate: -30 } })
+  .tween('#e-w', { at: 17.95, dur: 0.6, ease: 'settle', from: { opacity: 0, y: 16 } })
+  .tween('#e-s', { at: 18.2, dur: 0.6, ease: 'settle', from: { opacity: 0 } });
+
+// sound: chimes on achievements, ticks as prepared items land, clicks, soft swooshes on scene changes
+Motion.cue(4.25, 'click').cue(5.0, 'hit', { gain: 0.45 })
+  .cue(5.98, 'tick').cue(6.33, 'tick').cue(7.84, 'tick').cue(8.0, 'tick')
+  .cue(11.18, 'ding').cue(12.58, 'ding').cue(15.4, 'ding').cue(16.52, 'ding');
+[[2.3, 0.6], [7.25, 0.45], [9.12, 0.4], [13.95, 0.6], [17.6, 0.6]].forEach(([t, g]) => Motion.cue(t, 'whoosh', { gain: g }));
+Motion.duration = 19.5;
+
+/* ---------- Player (preview only; renderer drives window.seek) ---------- */
+(() => {
+  const q = new URLSearchParams(location.search);
+  const render = q.has('render');
+  if (render) document.body.classList.add('render');
+  if (q.has('alpha')) document.documentElement.classList.add('alpha');
+  window.DURATION = Motion.duration;
+  window.CUES = Motion.cues;
+  window.seek = t => Motion.seek(t);
+  const stage = document.getElementById('stage');
+  const fit = () => {
+    const s = render ? 1 : Math.min(innerWidth / 1920, (innerHeight - 48) / 1080);
+    stage.style.transform = `scale(${s})`;
+    stage.style.left = render ? '0' : `${(innerWidth - 1920 * s) / 2}px`;
+  };
+  addEventListener('resize', fit); fit();
+  Motion.seek(0);
+  if (render) return;
+  let t = 0, playing = false, last = 0;
+  const playBtn = document.getElementById('play'), scrub = document.getElementById('scrub'), time = document.getElementById('time');
+  const draw = () => { Motion.seek(t); scrub.value = (t / Motion.duration) * 1000; time.textContent = t.toFixed(2) + 's'; };
+  const loop = now => {
+    if (!playing) return;
+    t += (now - last) / 1000; last = now;
+    if (t >= Motion.duration) { t = Motion.duration; playing = false; playBtn.textContent = 'Play'; }
+    draw(); requestAnimationFrame(loop);
+  };
+  const toggle = () => {
+    if (t >= Motion.duration) t = 0;
+    playing = !playing; playBtn.textContent = playing ? 'Pause' : 'Play';
+    if (playing) { last = performance.now(); requestAnimationFrame(loop); }
+  };
+  const jump = d => { const st = Motion.scenes.map(s => s.start); const i = st.findIndex(s => s > t + 0.01);
+    t = d > 0 ? (i < 0 ? t : st[i]) : (st.filter(s => s < t - 0.3).pop() ?? 0); draw(); };
+  playBtn.onclick = toggle;
+  scrub.oninput = () => { t = (scrub.value / 1000) * Motion.duration; draw(); };
+  addEventListener('keydown', e => {
+    if (e.key === ' ') { e.preventDefault(); toggle(); }
+    if (e.key === 'ArrowRight') jump(1);
+    if (e.key === 'ArrowLeft') jump(-1);
+  });
+  const ch = document.getElementById('chapters');
+  Motion.scenes.forEach((s, i) => { const b = document.createElement('span'); b.textContent = `${i + 1}. ${s.title}`;
+    b.onclick = () => { t = s.start + 0.001; draw(); }; ch.appendChild(b); });
+  draw();
+})();
+</script>
+</body>
+</html>

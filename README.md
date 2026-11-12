@@ -131,6 +131,35 @@ Cross-agent session continuity. Persists project context in a `.state/` director
 
 **⚠️ Multi-CLI installs:** Copying this skill into `~/.claude/skills/` wires **Claude Code only**. Grok usually picks it up via its Claude-compat scan, but **Codex does not scan `~/.claude/skills/`** — without extra wiring it becomes a one-way blind spot that neither reads nor writes handoff state. See [`session-management/INSTALL.md`](session-management/INSTALL.md) for the exact `~/.codex/AGENTS.md` + `/wrap-up` prompt blocks (and the Grok/Cursor equivalents).
 
+### `/video-studio`
+
+Makes and edits videos as code. Motion-graphics explainers, animated charts and product walkthroughs are written as seekable HTML pages and rendered frame by frame to MP4 with Playwright. Raw vlog footage is transcribed, cut, captioned and scored. Nothing is generated as footage; everything on screen is drawn.
+
+**Use when:** Asked to make, animate, storyboard, render, edit, caption or cut down a video.
+
+**Needs:** `ffmpeg` (with libass), Node, and Python with numpy and scipy. Transcription uses `mlx-whisper` or `faster-whisper`. Put the Python packages in a `.venv/` inside the skill folder; it's git-ignored.
+
+### `/hive-feature-demo`
+
+Builds a 15 to 20 second demo video of a shipped Hive feature on top of `/video-studio`. It rebuilds the real Hive UI in the app's "new look" (tokens read from the repo), acts the feature out with a cursor, camera zooms and captions, and scores it with a music bed and achievement chimes. It uses invented people and companies only.
+
+**Use when:** Asked for a Hive feature demo, a release or what's-new video, or a short clip of something shipped.
+
+### `/hive-release-videos`
+
+A daily pipeline that chains the two skills above:
+1. It reads the "Hive Production Releases" artifact and finds the demoable features that went live in the last 24 hours.
+2. It builds a video for each one with `/hive-feature-demo`.
+3. It publishes each video publicly on the Object Edge Videos YouTube channel (through Claude in Chrome).
+4. It adds each one to the hive-os.ai `/videos` section with its SEO and AEO fields, as a commit on local `qa`. It never pushes.
+5. It emails a summary.
+
+Progress is kept in `~/hive-demos/_pipeline/state.json`, so nothing is made twice.
+
+**Use when:** "Run the release videos", or on a loop (`/loop 24h /hive-release-videos`).
+
+**Depends on:** `/hive-feature-demo`, `/video-studio`, `rohit-voice`, Claude in Chrome connected to a signed-in browser, and the Gmail connector.
+
 ---
 
 ## How the Learning Skills Work Together
