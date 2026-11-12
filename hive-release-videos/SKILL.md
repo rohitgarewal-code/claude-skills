@@ -22,6 +22,7 @@ This skill orchestrates three others. Load each when you reach its step; don't r
 | Hive repo | `/Users/rohitgarewal/dev/projects/OE-Executive-Dashboard` (website step: see "Step 4") |
 | Work folder | `~/hive-demos/<slug>/` (one per video; never inside the repo) |
 | Run state | `~/hive-demos/_pipeline/state.json` and `~/hive-demos/_pipeline/runs.jsonl` |
+| Drive folder | "Demos" in the Sales and Marketing shared drive (Videos › Demos): https://drive.google.com/drive/folders/1c9k2pt83prmwjJec7M7wtW3btLa3FnlV |
 | Email to | rohit.garewal@objectedge.com |
 | Max videos per run | 4 (the rest wait for the next run, oldest first) |
 
@@ -38,7 +39,7 @@ This skill orchestrates three others. Load each when you reach its step; don't r
       "status": "done | built | published | skipped | failed",
       "skip_reason": "", "slug": "no-slop-mode",
       "mp4": "~/hive-demos/no-slop-mode/renders/no-slop-mode-sound.mp4",
-      "youtube_id": "i54waSsaA5Q", "site": "committed <hash> | pending | n/a",
+      "youtube_id": "i54waSsaA5Q", "drive": "uploaded | pending", "site": "committed <hash> | pending | n/a",
       "at": "<ISO>"
     }
   }
@@ -136,6 +137,24 @@ Load `claude-in-chrome`. Use one tab for the whole run, and close it at the end.
 5. From the "Video published" dialog, `find` the `youtu.be/…` link and record the id. Close the dialog. Set `status: "published"`.
 6. If anything differs from this (a new Studio layout, a verification prompt, a sign-in screen), stop the YouTube step for this run, leave the video `built`, and say so in the email. Never type a password.
 
+## Step 4b: Save the MP4 to the Drive folder (per item, after YouTube)
+
+Every published video also goes to the **Drive folder** in Config, as the same file that went to YouTube (`renders/<slug>-sound.mp4`, keep its name). Use the same Chrome tab.
+
+1. Open the folder URL. Check the page title says **Demos** and the account (top right) is rohit.garewal@objectedge.com.
+2. Drive has no file input until you ask for one, and its own picker is a native dialog Chrome can't drive. So first make its file input reachable, with `javascript_tool`:
+   ```js
+   if (!window.__ccPatched) { const o = HTMLInputElement.prototype.click;
+     HTMLInputElement.prototype.click = function () { if (this.type === 'file') {
+       this.setAttribute('aria-label', 'drive native upload input');
+       if (!this.isConnected) { this.style.display = 'none'; document.body.appendChild(this); } return; }
+       return o.apply(this, arguments); };
+     window.__ccPatched = true; } 'ok'
+   ```
+   Then click **New**, then **File upload** (the native dialog doesn't open), `find` "drive native upload input", and `file_upload` the MP4 to that ref. Drive removes the input after each upload, so repeat New → File upload → find for every file. (A synthetic drop event does not work.)
+3. Reload the folder and confirm the file is listed with the right size (`get_page_text`). Record `drive: "uploaded"` on the item.
+4. If the page looks different, asks to sign in, or the upload doesn't appear, leave `drive: "pending"`, carry on, and say so in the email. The next run retries every `published` or `done` item whose `drive` is pending.
+
 ## Step 5: Add it to the hive-os.ai video section (per item)
 
 The section is `hive-os.ai/videos` (the index, newest first) and `/videos/<slug>` (one pre-rendered watch page per video). **A new video is one entry appended to `VIDEOS` in `frontend/src/components/videos/videos.ts`, and nothing else.** There's no CMS, database, component or route change. Everything below is generated from that list:
@@ -197,10 +216,11 @@ The canonical example is commit `20761ee6c` (first entry: `no-slop-mode`, `i54wa
 - **Subject:** `Hive release videos: <N> made for <release(s)> (<date>)`. If nothing was made but items failed or were skipped: `Hive release videos: nothing published for <date>`.
 - **Body** (`htmlBody` plus a plain `body`):
   - One paragraph: which releases, how many features, how many videos.
-  - **Per video:** the title, the YouTube link, its one-line beat summary, what was invented, and the website status (the commit hash, plus what Rohit has to do to get it live).
+  - **Per video:** the title, the YouTube link, the Drive folder link (or why it is pending), its one-line beat summary, what was invented, and the website status (the commit hash, plus what Rohit has to do to get it live).
   - **Skipped and failed:** one line each, with the reason.
   - Anything that needs him, such as a pending push or a YouTube prompt.
-- Then append to `runs.jsonl`: `{run_at, artifact_version, releases, candidates, made, skipped, failed, youtube_ids, site_commits, email_id}`, write `state.json`, and delete `run.lock`.
+- **Clean up the local videos** (Rohit's call, 12 Nov 2026: Drive is where the files live). For each item whose `drive` is `uploaded` and whose YouTube upload is done, move every `.mp4` under `~/hive-demos/<slug>/` (outside `node_modules`) to `~/.Trash/hive-demos-videos-<YYYYMMDD>/<slug>/`. Use the Trash, never `rm`. Keep everything else (`demo.html`, `src/`, `storyboard.md`, `work/`, `*.cues.json`), so a video can be re-rendered. Never trash an MP4 whose Drive upload isn't confirmed.
+- Then append to `runs.jsonl`: `{run_at, artifact_version, releases, candidates, made, skipped, failed, youtube_ids, drive_uploaded, site_commits, email_id}`, write `state.json`, and delete `run.lock`.
 
 ## Safety rules (from the repo's CLAUDE.md, binding even on a loop)
 
