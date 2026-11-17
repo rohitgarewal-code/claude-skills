@@ -54,7 +54,7 @@ Rendering and sound come from the **video-studio** skill (`~/.claude/skills/vide
 
 5. **Look before rendering.** Render stills at the busiest moment of each beat (`node ~/.claude/skills/video-studio/scripts/render_html.mjs demo.html --stills 1.6,4,6.9,9.3,11.4,15.6,18.9 --out work/stills`), put them on one contact sheet, and look at it. Fix overflow, collisions, captions covering the action, anything appearing early (a to-only tween starts from the natural state), and empty frames.
 
-6. **Render.** `node ~/.claude/skills/video-studio/scripts/render_html.mjs demo.html --out renders/<slug>.mp4 --workers 4`. This also writes `renders/<slug>.cues.json`.
+6. **Render at 1440p.** `node ~/.claude/skills/video-studio/scripts/render_html.mjs demo.html --out renders/<slug>.mp4 --scale 4/3 --crf 14 --preset slow --workers 4`. The page keeps its 1920×1080 layout and is drawn at 2560×1440. This also writes `renders/<slug>.cues.json`. Never deliver below 1920×1080 (Rohit's call, 17 Nov 2026). For YouTube, finish with `hive-release-videos`' `scripts/youtube_encode.sh`, which fits the best quality into the 10 MB browser upload.
 
 7. **Score.** `python3 ~/.claude/skills/video-studio/scripts/soundtrack.py renders/<slug>.mp4 --music afrohouse --drop <trigger start> --outro <end-card length> --loudness -15.2 --out renders/<slug>-sound.mp4`. Use `--music <track>` for the house track. Cue conventions, declared in the timeline:
    - `click` on every cursor press;
@@ -72,4 +72,4 @@ Rendering and sound come from the **video-studio** skill (`~/.claude/skills/vide
 
 ## Defaults
 
-1920×1080, 30 fps, about 19.5 s. Hive dark theme. IBM Plex Sans, Sans Condensed and Mono. Afro house bed, drop at the trigger beat, drums out for the end card.
+Laid out at 1920×1080 and rendered at 2560×1440 (`--scale 4/3`), 30 fps, about 19.5 s. 1920×1080 is the minimum output. Hive dark theme. IBM Plex Sans, Sans Condensed and Mono. Afro house bed, drop at the trigger beat, drums out for the end card.

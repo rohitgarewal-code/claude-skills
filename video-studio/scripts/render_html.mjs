@@ -7,6 +7,7 @@
 // Usage:
 //   node render_html.mjs page.html --out out.mp4 [--fps 30] [--width 1920 --height 1080]
 //        [--from 0 --to 12.5] [--workers 4] [--audio vo.wav] [--crf 18] [--preset veryfast]
+//        [--scale 4/3]   draw the same layout at a higher pixel density: 1920x1080 at 4/3 = 2560x1440 output
 //   node render_html.mjs page.html --alpha --out overlay.mov        # transparent overlay for vlog edits
 //   node render_html.mjs page.html --stills 2.5,9,31 --out stills/  # PNG checks before a full render
 //   node render_html.mjs page.html --cues-only --out out.mp4          # just write out.cues.json (sound moments)
@@ -70,6 +71,9 @@ const input = A._[0];
 if (!input) { console.error('usage: render_html.mjs page.html --out out.mp4 [options]'); process.exit(1); }
 const fps = Number(A.fps || 30);
 const W = Number(A.width || 1920), H = Number(A.height || 1080);
+const SCALE = (v => (v.includes('/') ? v.split('/').map(Number).reduce((a, b) => a / b) : Number(v)))(String(A.scale || '1'));
+if (!(SCALE >= 1)) { console.error('--scale must be 1 or more (e.g. 4/3)'); process.exit(1); }
+const OW = Math.round(W * SCALE / 2) * 2, OH = Math.round(H * SCALE / 2) * 2;
 const alpha = !!A.alpha;
 const crf = String(A.crf || 18), preset = String(A.preset || 'veryfast');
 const out = path.resolve(A.out || (alpha ? 'overlay.mov' : 'out.mp4'));
@@ -79,7 +83,7 @@ const { chromium } = loadPlaywright();
 const browser = await launch(chromium, A.chrome);
 
 async function openPage() {
-  const page = await browser.newPage({ viewport: { width: W, height: H }, deviceScaleFactor: 1 });
+  const page = await browser.newPage({ viewport: { width: W, height: H }, deviceScaleFactor: SCALE });
   page.on('pageerror', e => console.error('[page error]', e.message));
   page.on('console', m => { if (m.type() === 'error' || m.type() === 'warning') console.error('[page]', m.text()); });
   await page.goto(url, { waitUntil: 'load' });
@@ -136,10 +140,13 @@ const base = out.replace(/\.(mp4|mov)$/i, '');
 const t0 = Date.now();
 
 function encoderArgs(tmp) {
-  const inArgs = ['-y', '-loglevel', 'error', '-f', 'image2pipe', '-framerate', String(fps), '-c:v', alpha ? 'png' : 'mjpeg', '-i', '-'];
+  // Screenshots arrive as full-range JPEG. Convert to TV range (what players and YouTube expect) and to the
+  // exact output size, instead of only tagging the range, which leaves full-range values in a TV-range file.
+  const inArgs = ['-y', '-loglevel', 'error', '-f', 'image2pipe', '-framerate', String(fps), '-c:v', alpha ? 'png' : 'mjpeg', '-i', '-',
+    ...(alpha ? [] : ['-vf', `scale=${OW}:${OH}:flags=lanczos+accurate_rnd+full_chroma_int:in_range=pc:out_range=tv,format=yuv420p`])];
   const enc = alpha
     ? ['-c:v', 'prores_ks', '-profile:v', '4444', '-pix_fmt', 'yuva444p10le', '-vendor', 'apl0']
-    : ['-c:v', 'libx264', '-preset', preset, '-crf', crf, '-pix_fmt', 'yuv420p', '-color_primaries', 'bt709', '-color_trc', 'bt709', '-colorspace', 'bt709', '-movflags', '+faststart'];
+    : ['-c:v', 'libx264', '-preset', preset, '-crf', crf, '-pix_fmt', 'yuv420p', '-color_range', 'tv', '-color_primaries', 'bt709', '-color_trc', 'bt709', '-colorspace', 'bt709', '-movflags', '+faststart'];
   return [...inArgs, ...enc, '-r', String(fps), tmp];
 }
 
@@ -190,4 +197,4 @@ if (A.audio) {
 fs.renameSync(`${base}.tmp${ext}`, out);
 for (const p of parts) fs.unlinkSync(p);
 fs.unlinkSync(list);
-console.log(`${out}  (${(to - from).toFixed(2)}s, ${total} frames @ ${fps}fps, ${W}x${H}, ${workers} workers, ${((Date.now() - t0) / 1000).toFixed(0)}s)`);
+console.log(`${out}  (${(to - from).toFixed(2)}s, ${total} frames @ ${fps}fps, ${OW}x${OH}, ${workers} workers, ${((Date.now() - t0) / 1000).toFixed(0)}s)`);

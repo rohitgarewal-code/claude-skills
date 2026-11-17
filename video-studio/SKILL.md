@@ -21,7 +21,7 @@ All paths are relative to this skill's folder (`~/.claude/skills/video-studio/`)
 | Script | Does |
 |---|---|
 | `templates/scene.html` | Starter page with a tiny deterministic timeline engine (`Motion.scene`, `Motion.tween`), brand tokens and a preview player. Copy it into the project. |
-| `scripts/render_html.mjs` | Renders the page to MP4 (parallel workers), to transparent ProRes 4444 (`--alpha`, for overlays), or to PNG stills (`--stills`). Can mux audio. |
+| `scripts/render_html.mjs` | Renders the page to MP4 (parallel workers), to transparent ProRes 4444 (`--alpha`, for overlays), or to PNG stills (`--stills`). Can mux audio. `--scale 4/3` draws the 1920×1080 layout at 2560×1440, the default for anything bound for YouTube. Output is always TV-range BT.709. |
 | `scripts/soundtrack.py` | Scores a rendered video: an original generated Afro house bed (`--music afrohouse`) or a supplied track, plus effects on the page's cues (chimes for achievements that step up the scale, ticks, swooshes). Mixes to -14 LUFS and muxes without re-encoding the video. |
 | `scripts/tts.py` | Voiceover per scene (ElevenLabs if `ELEVENLABS_API_KEY` is set, macOS `say` as scratch), durations, and a placed VO track. |
 | `scripts/transcribe.py` | Word-timed transcript (`mlx-whisper` on Apple Silicon, else `faster-whisper`, else the OpenAI API). |
